@@ -12,8 +12,10 @@ import {
   Button,
   Image,
   useDisclosure,
+  Img,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
+import CityLogo from "..//../assets/logos/CityLogo.png";
 
 const DashBoardHeader = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -49,7 +51,7 @@ const DashBoardHeader = () => {
         />
 
         {/* Company Logo */}
-        <Image src="/company-logo.png" alt="Company Logo" height={8} />
+        <Img src={CityLogo} alt="Company Logo" height={8} />
 
         {/* Search Bar */}
         <Input
