@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {Link} from 'react-router-dom'
 import {
   Flex,
   IconButton,
@@ -64,7 +65,9 @@ const DashBoardHeader = () => {
         />
 
         {/* Sign In Button */}
-        <Button variant="outline">Sign In</Button>
+        <Link to="/signin">
+          <Button variant="outline">Sign In</Button>
+        </Link>
       </Flex>
 
       {/* Side Drawer */}

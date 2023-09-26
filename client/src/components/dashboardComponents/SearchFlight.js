@@ -134,7 +134,7 @@ const handleFromAirportSelect = (airport) => {
 
   return (
     <Box>
-      <Tabs variant="enclosed" colorScheme="red">
+      <Tabs  variant="enclosed" colorScheme="red">
         <TabList>
           <Tab>Flight</Tab>
           <Tab>Hotel</Tab>
@@ -145,7 +145,7 @@ const handleFromAirportSelect = (airport) => {
           <Tab>More</Tab>
         </TabList>
         <TabPanels>
-          <TabPanel>
+          <TabPanel >
             {/* Flight Search Panel */}
             <Box>
               {/* One way, Return, Multicity */}
