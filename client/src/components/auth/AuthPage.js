@@ -1,26 +1,21 @@
-
-
-import React, { useState } from 'react';
-import Login from './Login';
+import React, { useState } from 'react'
 import SignUp from './SignUp';
-
+import Login from './Login';
 
 const AuthPage = () => {
-  const [showLogin, setShowLogin] = useState(true);
+    const [showLogin, setShowLogin] = useState(true);
 
   const handleToggle = () => {
     setShowLogin(!showLogin);
   };
-
   return (
     <div>
-      
       {showLogin ? <Login /> : <SignUp handleToggle={handleToggle} />}
       <button onClick={handleToggle}>
-        {showLogin ? "Don't have an Account? Sign Up." : 'Back to Login'}
+        
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default AuthPage;
+export default AuthPage

@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import CityLogo from '..//../assets/logos/CityLogo.png';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css'
+import LayoutPage from '../../pages/LayoutPage';
 const SignUp = ({ handleToggle }) => {
   const [show, setShow] = useState(false);
   const [name, setName] = useState('');
@@ -104,7 +105,8 @@ const SignUp = ({ handleToggle }) => {
   };
 
   return (
-    <VStack width="550px" ml="auto" mr="auto" spacing="5px" color="black">
+   
+    <VStack width="550px"  ml="auto" mr="auto" spacing="5px" color="black">
       <HStack alignSelf="flex-start" spacing="2">
         <IconButton
           icon={<ArrowBackIcon />}
@@ -159,6 +161,7 @@ const SignUp = ({ handleToggle }) => {
         Signup
       </Button>
     </VStack>
+    
   );
 };
 

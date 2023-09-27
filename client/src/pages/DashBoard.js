@@ -62,7 +62,7 @@ const fetchData = async () => {
     borderRadius="lg"
     borderWidth="1px"
     >
-      <DashBoardHeader/> 
+      
       <SearchFlight 
       
       />

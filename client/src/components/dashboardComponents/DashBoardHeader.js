@@ -43,6 +43,7 @@ const DashBoardHeader = () => {
         right={0}
         zIndex={999}
         bg="white"
+        
       >
         {/* Toggle Button */}
         <IconButton
@@ -56,7 +57,7 @@ const DashBoardHeader = () => {
 
         {/* Search Bar */}
         <Input
-          placeholder="Search"
+          placeholder="Type here /name/PNR/reference"
           size="sm"
           width="512px"
           height={8}

@@ -3,16 +3,16 @@ import React from 'react';
 
 import './App.css';
 import { Switch, Route } from 'react-router-dom';
-
-import DashBoard from './pages/DashBoard';
-import Login from './components/auth/Login';
+import Homepage from './pages/Homepage'
 import AuthPage from './components/auth/AuthPage';
+import ResultPage from './components/resultpage/ResultPage';
 function App() {
   return (
     <div className="App">
       <Switch>
-        <Route path="/" component={DashBoard} exact />
+        <Route path="/" component={Homepage} exact />
         <Route path="/signin" component={AuthPage}/>
+        <Route path="/result" component={ResultPage}/>
         {/* Comment out any other routes */}
       </Switch>
     </div>
