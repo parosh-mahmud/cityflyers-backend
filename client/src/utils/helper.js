@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ChatProvider = () => {
+const helper = () => {
   return (
     <div>
       
@@ -8,4 +8,4 @@ const ChatProvider = () => {
   )
 }
 
-export default ChatProvider
+export default helper

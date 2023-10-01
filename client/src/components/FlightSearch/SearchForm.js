@@ -31,6 +31,7 @@ import {
 } from '@chakra-ui/react';
 import DatePicker from 'react-datepicker';
 import { SearchIcon } from '@chakra-ui/icons';
+
 const airports = [
   {
     iata: 'DAC',
@@ -48,7 +49,7 @@ const airports = [
   // You can add more airport data as needed.
 ];
 
-const SearchForm = () => {
+const SearchForm = ({journeyType}) => {
 
     const [isOpen, setIsOpen] = useState(false);
   const [selectedJourneyDate, setSelectedJourneyDate] = useState(new Date());
@@ -60,50 +61,15 @@ const SearchForm = () => {
   const [searchedAirports, setSearchedAirports] = useState([]); 
 
   const [searchQuery, setSearchQuery] = useState(''); // State to store the search query
-  
-  
-
-useEffect(() => {
-  // Define a function to fetch and filter airport data based on searchQuery
-  const fetchAndFilterAirports = async () => {
-    try {
-      if (searchQuery) {
-        const response = await fetch(`http://localhost:5000/api/airports/airportList?query=${searchQuery}`);
-        if (response.ok) {
-          const data = await response.json();
-          console.log('API response; ',data)
-          // Filter the data to get the top 10 airports based on the searchQuery
-          const filteredAirports = data
-            .filter((airport) =>
-              airport.name.toLowerCase().includes(searchQuery.toLowerCase())||
-              airport.iata.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .slice(0, 8); // Limit to the first 8 matching airports
-          // Update searchedAirports with the filtered data
-          setSearchedAirports(filteredAirports);
-        } else {
-          console.error('Failed to fetch airport data');
-        }
-      } else {
-        // If searchQuery is empty, clear the searchedAirports
-        setSearchedAirports([]);
-      }
-    } catch (error) {
-      console.error('Error fetching airport data:', error);
-    }
-  };
-
-  // Call the fetchAndFilterAirports function when searchQuery changes
-  fetchAndFilterAirports();
-}, [searchQuery]);
-
-  
+  const JourneyType = journeyType;
+  console.log(JourneyType)
+    
 const handleSearchQueryChange = (event) => {
     const { value } = event.target;
     setSearchQuery(value); // Update the searchQuery state as you type
     console.log(`Search query: ${value}`);
   };
-  const handleOpen = () => {
+const handleOpen = () => {
     setIsOpen(true);
   };
    const handleClose = () => {
@@ -135,6 +101,39 @@ const handleSearchQueryChange = (event) => {
     const dayIndex = date.getDay(); // 0 for Sunday, 1 for Monday, etc.
     return daysOfWeek[dayIndex];
   };
+const fetchAndDisplayAirports = async () => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/airports/airportList?query=${searchQuery}`);
+    if (response.ok) {
+      const airportData = await response.json();
+      console.log('API response: ', airportData);
+
+      // Update searchedAirports with the fetched data
+      setSearchedAirports(airportData);
+    } else {
+      console.error('Failed to fetch airport data');
+    }
+  } catch (error) {
+    console.error('Error fetching airport data:', error);
+  }
+};
+
+// Call the fetchAndDisplayAirports function when searchQuery changes
+useEffect(() => {
+  if (!searchQuery) {
+    // If searchQuery is empty, clear the searchedAirports and return to stop useEffect
+    setSearchedAirports([]);
+    return;
+  }
+
+  // Only fetch data when searchQuery is not empty
+  fetchAndDisplayAirports();
+}, [searchQuery]);
+
+
+
+
+  
 
   return (
     <div>
@@ -146,6 +145,7 @@ const handleSearchQueryChange = (event) => {
       <Box
         w={['100%', '50%', '20%']}
         padding="4"
+        position="relative"
         border="1px solid #E2E8F0"
         borderRadius="4px"
         boxShadow="md"
@@ -154,20 +154,81 @@ const handleSearchQueryChange = (event) => {
         
       >
         <Popover
-          isOpen={fromAirportListOpen}
-          onOpen={() => setFromAirportListOpen(true)}
-          onClose={() => setFromAirportListOpen(false)}
+  isOpen={fromAirportListOpen}
+  onOpen={() => setFromAirportListOpen(true)}
+  onClose={() => setFromAirportListOpen(false)}
+  placement="bottom"
+>
+  <PopoverTrigger>
+    <Flex direction="column" alignItems="start">
+      <Text fontSize="md" fontWeight="semibold">
+        From
+      </Text>
+      <Text fontSize="sm" fontWeight="semibold">
+        {selectedFromAirport ? selectedFromAirport.name : 'Select an airport'}
+      </Text>
+      <Text fontSize="sm" color="gray.600">
+        {selectedFromAirport ? `${selectedFromAirport.iata}, ${selectedFromAirport.city}` : ''}
+      </Text>
+    </Flex>
+  </PopoverTrigger>
+  <PopoverContent>
+    <PopoverArrow />
+    <PopoverCloseButton />
+    <PopoverHeader>Select an airport</PopoverHeader>
+    <PopoverBody>
+      <Flex alignItems="center">
+        <Input
+          placeholder="Type to search airports"
+          value={searchQuery}
+          onChange={handleSearchQueryChange}
+          width="100%"
+        />
+      </Flex>
+      {/* Display search results here */}
+      {searchedAirports.map((airport) => (
+        <div
+          key={airport.iata}
+          onClick={() => handleFromAirportSelect(airport)}
+          style={{ cursor: 'pointer' }}
+        >
+          {`${airport.name} (${airport.iata}), ${airport.city}, ${airport.country}`}
+        </div>
+      ))}
+    </PopoverBody>
+  </PopoverContent>
+</Popover>
+
+      </Box>
+
+      <Box
+        w={['100%', '50%', '20%']}
+        padding="4"
+        position="relative"
+        border="1px solid #E2E8F0"
+        borderRadius="4px"
+        boxShadow="md"
+        height="96px"
+        
+        cursor="pointer"
+        
+      >
+        <Popover
+          isOpen={toAirportListOpen}
+            onOpen={() => setToAirportListOpen(true)}
+            onClose={() => setToAirportListOpen(false)}
+            placement="bottom"
         >
           <PopoverTrigger>
             <Flex direction="column" alignItems="start">
               <Text fontSize="md" fontWeight="semibold">
-                From
+                To
               </Text>
-              <Text fontSize="lg" fontWeight="bold">
-                {selectedFromAirport ? selectedFromAirport.name : 'Select an airport'}
+              <Text fontSize="sm" fontWeight="semibold">
+                {selectedToAirport ? selectedToAirport.name : 'Select an airport'}
               </Text>
               <Text fontSize="sm" color="gray.600">
-                {selectedFromAirport ? `${selectedFromAirport.iata}, ${selectedFromAirport.city}` : ''}
+                {selectedToAirport ? `${selectedToAirport.iata}, ${selectedToAirport.city}` : ''}
               </Text>
             </Flex>
           </PopoverTrigger>
@@ -182,77 +243,15 @@ const handleSearchQueryChange = (event) => {
                 width="100%"
               />
             </Flex>
-            {/* Display search results here */}
-            <ul>
-              {searchedAirports.map((airport) => (
-                <li
-                  key={airport.iata}
-                  onClick={() => handleFromAirportSelect(airport)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {`${airport.name} (${airport.iata}), ${airport.city}, ${airport.country}`}
-                </li>
-              ))}
-            </ul>
             <PopoverBody>
               <ul>
                 {airports.map((airport) => (
                   <li
-                    key={airport.iata}
-                    onClick={() => handleFromAirportSelect(airport)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    {`${airport.name} (${airport.iata}), ${airport.city}, ${airport.country}`}
-                  </li>
-                ))}
-              </ul>
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
-      </Box>
-
-      <Box
-        w={['100%', '50%', '20%']}
-        padding="4"
-        border="1px solid #E2E8F0"
-        borderRadius="4px"
-        boxShadow="md"
-        height="96px"
-        
-        cursor="pointer"
-        
-      >
-        <Popover
-          isOpen={toAirportListOpen}
-          onOpen={() => setToAirportListOpen(true)}
-          onClose={() => setToAirportListOpen(false)}
-        >
-          <PopoverTrigger>
-            <Flex direction="column" alignItems="start">
-              <Text fontSize="md" fontWeight="semibold">
-                To
-              </Text>
-              <Text fontSize="lg" fontWeight="bold">
-                {selectedToAirport ? selectedToAirport.name : 'Select an airport'}
-              </Text>
-              <Text fontSize="sm" color="gray.600">
-                {selectedToAirport ? `${selectedToAirport.iata}, ${selectedToAirport.city}` : ''}
-              </Text>
-            </Flex>
-          </PopoverTrigger>
-          <PopoverContent>
-            <PopoverArrow />
-            <PopoverCloseButton />
-            <PopoverHeader>Select an Airport</PopoverHeader>
-            <PopoverBody>
-              <ul>
-                {airports.map((airport) => (
-                  <li
-                    key={airport.iata}
+                    key={airport.code}
                     onClick={() => handleToAirportSelect(airport)}
                     style={{ cursor: 'pointer' }}
                   >
-                    {`${airport.name} (${airport.iata}), ${airport.city}, ${airport.country}`}
+                    {`${airport.name} (${airport.code}), ${airport.city}, ${airport.country}`}
                   </li>
                 ))}
               </ul>
@@ -277,7 +276,7 @@ const handleSearchQueryChange = (event) => {
           <Text fontSize="md" fontWeight="semibold">
             Journey Date
           </Text>
-          <Text fontSize="lg" fontWeight="bold">
+          <Text fontSize="sm" fontWeight="semibold">
             {selectedJourneyDate ? selectedJourneyDate.toDateString() : 'Select a date'}
           </Text>
           <Text fontSize="sm" color="gray.600">
@@ -320,7 +319,7 @@ const handleSearchQueryChange = (event) => {
           <Text fontSize="md" fontWeight="semibold">
             Return Date
           </Text>
-          <Text fontSize="lg" fontWeight="bold">
+          <Text fontSize="sm" fontWeight="semibold">
             {selectedReturnDate ? selectedReturnDate.toDateString() : 'Select a date'}
           </Text>
           <Text fontSize="sm" color="gray.600">
@@ -350,7 +349,7 @@ const handleSearchQueryChange = (event) => {
       </Modal>
      
 
-      <Box w={['100%', '100%', '100%']}
+      <Box w={['100%', '50%', '20%']}
      
       >
         <Select
@@ -364,21 +363,7 @@ const handleSearchQueryChange = (event) => {
         </Select>
       </Box>
 
-       <Box w={['100%', '50%', '100%']}
-      padding="4"
-        border="1px solid #E2E8F0"
-        borderRadius="4px"
-        boxShadow="md"
-        height="96px"
-        backgroundColor="red"
-       >
-         <Button colorScheme="red" ml={2}>
-                <Flex alignItems="center">
-                  <SearchIcon mr={2} />
-                  Search
-                </Flex>
-              </Button>
-      </Box>
+       
 
       
     </Flex>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Box, Button, Text } from '@chakra-ui/react'
-import DashBoardHeader from '../components/dashboardComponents/DashBoardHeader';
-import SearchFlight from '../components/dashboardComponents/SearchFlight';
+import DashBoardHeader from '../components/Header/MainHeader';
+import SearchFlight from '../components/FlightSearch/AirSearchForm';
 const DashBoard = () => {
 
   const [apiData, setApiData] = useState(null);

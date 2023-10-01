@@ -1,34 +1,47 @@
 const asyncHandler = require("express-async-handler");
-const airports = require('airport-codes-updated');
+const airports = require('airport-codes-updated').toJSON();
 const { default: axios } = require("axios");
-const bearerToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRoZWNpdHlmbHllcnNAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy91c2VyZGF0YSI6Ijk1fDExMXwxMDMuMTI0LjI1MS4xNDcsMTkyLjE2OC4wLjEwNiIsIm5iZiI6MTY5NTU3MDk3MywiZXhwIjoxNjk2MTc1NzczLCJpYXQiOjE2OTU1NzA5NzMsImlzcyI6Imh0dHA6Ly9hcGkuc2FuZGJveC5mbHlodWIuY29tIiwiYXVkIjoiYXBpLnNhbmRib3guZmx5aHViLmNvbSJ9.K9KE1ymzvj-LLN5jBlib6IHT_S6t2PvSiWDu9DEbfI8';
+const bearerToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRoZWNpdHlmbHllcnNAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy91c2VyZGF0YSI6Ijk1fDExMXwxMDMuMTI0LjI1MS4xNDcsMTkyLjE2OC4wLjEwNiIsIm5iZiI6MTY5NTg4MDI2OSwiZXhwIjoxNjk2NDg1MDY5LCJpYXQiOjE2OTU4ODAyNjksImlzcyI6Imh0dHA6Ly9hcGkuc2FuZGJveC5mbHlodWIuY29tIiwiYXVkIjoiYXBpLnNhbmRib3guZmx5aHViLmNvbSJ9.6JlQDpRAm9qxpAKUq2fXEZICMfDztohY4epFBcnyf5U';
 const {admin,db} = require('../config/firebaseConfig')
 
 const accessAirportList = asyncHandler(async (req, res) => {
   try {
-    // Create an array to store the airport data
-    const airportList = airports.toJSON().map((airport) => ({
+    const query = req.query.query.toLowerCase(); // Convert the query to lowercase for case-insensitive search
+
+    // Filter airports that match the query in either name or code
+    const filteredAirports = airports.filter(
+      (airport) =>
+        airport.name.toLowerCase().includes(query) ||
+        airport.iata.toLowerCase().includes(query) ||
+        airport.city.toLowerCase().includes(query) ||
+        airport.country.toLowerCase().includes(query)
+        );
+
+    // Map the filtered airports to the desired data structure
+    const airportList = filteredAirports.map((airport) => ({
       name: airport.name,
-      iata: airport.iata,
+      code: airport.iata,
       city: airport.city,
       country: airport.country,
     }));
 
-    // Send the airportList data to Firebase Firestore
-    const firestore = admin.firestore();
-    const airportsCollection = firestore.collection('airports'); // Replace 'airports' with your Firestore collection name
-
-    airportList.forEach(async (airportData) => {
-      await airportsCollection.add(airportData);
-    });
-
-    // Send the airportList data as a JSON response to the frontend
-    res.json({ message: 'Airport data inserted into Firestore.', airportList });
+    // Send the airportList array as a JSON response to the frontend
+    res.json(airportList);
   } catch (error) {
-    console.error('Error inserting airport data:', error);
+    console.error('Error sending airport data:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+// Example usage:
+// app.get('/api/airports/airportList', accessAirportList);
+
+
+
+
+
+
+
+
 
 // New route to send data into Firebase Realtime Database
 const sendAirportDataToRealtimeDB = asyncHandler(async (req, res) => {

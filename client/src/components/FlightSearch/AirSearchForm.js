@@ -32,8 +32,8 @@ import { SearchIcon } from '@chakra-ui/icons';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import LayoutPage from '../../pages/LayoutPage';
-import Oneway from '../various/Oneway';
-import SearchForm from '../SearchForm';
+import Oneway from './JourneyType';
+import SearchForm from './SearchForm';
 
 
 
