@@ -31,6 +31,7 @@ import {
 } from '@chakra-ui/react';
 import DatePicker from 'react-datepicker';
 import { SearchIcon } from '@chakra-ui/icons';
+import { useDispatch } from 'react-redux';
 
 const airports = [
   {
@@ -62,6 +63,23 @@ const SearchForm = ({journeyType}) => {
 
   const [searchQuery, setSearchQuery] = useState(''); // State to store the search query
   const JourneyType = journeyType;
+const dispatch = useDispatch();
+  const [formData, setFormData] = useState({
+    // Define your form fields here
+    origin: '',
+    destination: '',
+    departureDate: '',
+    // ... other form fields
+  });
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSearch = () => {
+    // Perform form validation here if needed
+    
+  };
+
   console.log(JourneyType)
     
 const handleSearchQueryChange = (event) => {

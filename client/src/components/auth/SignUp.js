@@ -1,46 +1,41 @@
-import { ArrowBackIcon } from '@chakra-ui/icons';
-import { FormControl, useToast, VStack, FormLabel, Input, InputGroup, InputRightElement, Button, IconButton, HStack } from '@chakra-ui/react';
-import axios from 'axios';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import CityLogo from '..//../assets/logos/CityLogo.png';
+import axios from 'axios';
+import {
+  FormControl,
+  useToast,
+  VStack,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Button,
+  IconButton,
+  HStack,
+} from '@chakra-ui/react';
+import { ArrowBackIcon } from '@chakra-ui/icons';
 import PhoneInput from 'react-phone-number-input';
-import 'react-phone-number-input/style.css'
-import LayoutPage from '../../pages/LayoutPage';
+import 'react-phone-number-input/style.css';
+import CityLogo from '..//../assets/logos/CityLogo.png';
+
 const SignUp = ({ handleToggle }) => {
   const [show, setShow] = useState(false);
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [picture, setPicture] = useState(null); // Initialize picture state to null
-  const [loading, setLoading] = useState(false); // Initialize loading state to false
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
   const history = useHistory();
-  const [value, setValue] = useState()
 
   const handleClick = () => setShow(!show);
 
-
   const submitHandler = async () => {
     setLoading(true);
-    
-    if (!name || !email || !password || !confirmPassword || !picture) {
+
+    if (!email || !password || !phoneNumber) {
       toast({
-        title: 'Please fill in all fields and upload your picture',
+        title: 'Please fill in all fields.',
         status: 'warning',
-        duration: 5000,
-        isClosable: true,
-        position: 'bottom',
-      });
-      setLoading(false);
-      return;
-    }
-    
-    if (password !== confirmPassword) {
-      toast({
-        title: 'Passwords do not match',
-        status: 'error',
         duration: 5000,
         isClosable: true,
         position: 'bottom',
@@ -50,29 +45,10 @@ const SignUp = ({ handleToggle }) => {
     }
 
     try {
-      // Upload image to Cloudinary
-      const data = new FormData();
-      data.append('file', picture);
-      data.append('upload_preset', 'chat-app');
-      data.append('cloud_name', 'parosh');
-      const response = await fetch(
-        'https://api.cloudinary.com/v1_1/parosh/image/upload',
-        {
-          method: 'POST',
-          body: data,
-        }
-      );
-      if (!response.ok) {
-        throw new Error('Error uploading image to Cloudinary');
-      }
-      const responseData = await response.json();
-      const imageUrl = responseData.secure_url;
+      const userData = { email, password, phoneNumber };
+      console.log(userData);
+      const response = await axios.post('http://localhost:5000/api/user/registration', userData); // Replace with the correct API endpoint
 
-      // Create user on your server
-      const userData = { name, email, password, pic: imageUrl };
-      const userResponse = await axios.post('/api/user', userData);
-
-      // Handle successful user creation
       toast({
         title: 'Account created successfully',
         status: 'success',
@@ -81,15 +57,12 @@ const SignUp = ({ handleToggle }) => {
         position: 'bottom',
       });
 
-      localStorage.setItem('userInfo', JSON.stringify(userResponse.data));
-      
-      setName('');
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-    setPicture(null);
-    setLoading(false);
-      history.push('/chats');
+      localStorage.setItem('userInfo', JSON.stringify(response.data));
+      setEmail('');
+      setPassword('');
+      setPhoneNumber('');
+      setLoading(false);
+      history.push('/signin');
     } catch (error) {
       console.error(error);
       toast({
@@ -105,35 +78,28 @@ const SignUp = ({ handleToggle }) => {
   };
 
   return (
-   
-    <VStack width="550px"  ml="auto" mr="auto" spacing="5px" color="black">
+    <VStack width="550px" ml="auto" mr="auto" spacing="5px" color="black">
       <HStack alignSelf="flex-start" spacing="2">
-        <IconButton
-          icon={<ArrowBackIcon />}
-          aria-label="Back to Login"
-          onClick={handleToggle}
-        />
+        <IconButton icon={<ArrowBackIcon />} aria-label="Back to Login" onClick={handleToggle} />
         <img src={CityLogo} alt="Company Logo" height={8} />
       </HStack>
-      
+
       <FormControl id="email" isRequired>
         <FormLabel>Email</FormLabel>
-        <Input
-          placeholder="Enter your Email"
-          onChange={(e) => setEmail(e.target.value)}
+        <Input placeholder="Enter your Email" onChange={(e) => setEmail(e.target.value)} />
+      </FormControl>
+
+      <FormControl id="phone" isRequired>
+        <FormLabel>Phone Number</FormLabel>
+        <PhoneInput
+          defaultCountry="BD"
+          useNationalFormatForDefaultCountryValue={true}
+          placeholder="Enter phone number"
+          value={phoneNumber}
+          onChange={setPhoneNumber}
         />
       </FormControl>
 
-<FormControl id="phone" isRequired>
-  <FormLabel>Phone Number</FormLabel>
-  <PhoneInput
-  defaultCountry="BD"
-  useNationalFormatForDefaultCountryValue={true}
-      placeholder="Enter phone number"
-      value={value}
-      onChange={setValue}/>
-</FormControl>
-      
       <FormControl id="password" isRequired>
         <FormLabel>Password</FormLabel>
         <InputGroup>
@@ -149,8 +115,7 @@ const SignUp = ({ handleToggle }) => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
-     
-      
+
       <Button
         colorScheme="blue"
         width="100%"
@@ -161,7 +126,6 @@ const SignUp = ({ handleToggle }) => {
         Signup
       </Button>
     </VStack>
-    
   );
 };
 

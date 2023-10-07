@@ -83,7 +83,7 @@ const accessAir = asyncHandler(async (req, res) => {
     const requestData = req.body;
 
     // Define the API URL you want to access
-    const apiUrl = 'http://api.sandbox.flyhub.com/api/v1/AirSearch'; // Replace with your actual API endpoint
+    const apiUrl = 'https://api.flyhub.com/api/v1/AirSearch'; // Replace with your actual API endpoint
 
     // Set the headers with the Bearer token
     const headers = {

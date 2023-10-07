@@ -61,7 +61,7 @@ const Login = ({ handleToggle }) => {
         },
       };
 
-      const { data } = await axios.post('/api/user/login', { email, password }, config);
+      const { data } = await axios.post('http://localhost:5000/api/user/login', { email, password }, config);
       toast({
         title: 'Login successful',
         status: 'success',
@@ -70,7 +70,7 @@ const Login = ({ handleToggle }) => {
       });
       localStorage.setItem('userInfo', JSON.stringify(data));
 
-      history.push('/chats');
+      history.push('/testSearch');
       // Clear the form fields
       setEmail('');
       setPassword('');
