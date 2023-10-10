@@ -31,6 +31,7 @@ import {
 } from '@chakra-ui/react';
 import DatePicker from 'react-datepicker';
 import { SearchIcon } from '@chakra-ui/icons';
+import axios from 'axios';
 import { useDispatch } from 'react-redux';
 
 const airports = [
@@ -65,20 +66,28 @@ const SearchForm = ({journeyType}) => {
   const JourneyType = journeyType;
 const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    // Define your form fields here
-    origin: '',
-    destination: '',
-    departureDate: '',
-    // ... other form fields
+    AdultQuantity: 1,
+    ChildQuantity: 0,
+    InfantQuantity: 0,
+    EndUserIp: "103.124.251.147",
+    JourneyType: JourneyType,
+    Segments: [
+      {
+        Origin: selectedFromAirport ? selectedFromAirport.iata : '', // Use the selectedFromAirport iata code
+          Destination: selectedToAirport ? selectedToAirport.iata : '', // Use the selectedToAirport iata code
+          CabinClass: '1', // Assuming default CabinClass is '1', modify this as needed
+          DepartureDateTime: selectedJourneyDate.toISOString(),
+      },
+    ],
   });
+
+ 
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSearch = () => {
-    // Perform form validation here if needed
-    
-  };
+
 
   console.log(JourneyType)
     
@@ -150,7 +159,24 @@ useEffect(() => {
 
 
 
+const handleSearch = () => {
+    // Perform form validation here if needed
 
+    // Log the formData
+    console.log('Form Data:', formData);
+
+    // Make an API request using Axios
+    axios
+      .post('YOUR_API_ENDPOINT', formData) // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint
+      .then((response) => {
+        console.log('API Response:', response.data);
+        // Handle the API response data here
+      })
+      .catch((error) => {
+        console.error('API Error:', error);
+        // Handle API errors here
+      });
+  };
   
 
   return (
@@ -186,7 +212,7 @@ useEffect(() => {
         {selectedFromAirport ? selectedFromAirport.name : 'Select an airport'}
       </Text>
       <Text fontSize="sm" color="gray.600">
-        {selectedFromAirport ? `${selectedFromAirport.iata}, ${selectedFromAirport.city}` : ''}
+        {selectedFromAirport ? `${selectedFromAirport.code}, ${selectedFromAirport.city}` : ''}
       </Text>
     </Flex>
   </PopoverTrigger>
@@ -210,7 +236,7 @@ useEffect(() => {
           onClick={() => handleFromAirportSelect(airport)}
           style={{ cursor: 'pointer' }}
         >
-          {`${airport.name} (${airport.iata}), ${airport.city}, ${airport.country}`}
+          {`${airport.name} (${airport.code}), ${airport.city}, ${airport.country}`}
         </div>
       ))}
     </PopoverBody>
@@ -385,7 +411,12 @@ useEffect(() => {
 
       
     </Flex>
-              
+           <Button onClick={handleSearch} colorScheme="red" ml={2}>
+                <Flex alignItems="center">
+                  <SearchIcon mr={2} />
+                  Search
+                </Flex>
+              </Button>   
     </div>
   )
 }

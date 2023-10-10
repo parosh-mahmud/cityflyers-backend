@@ -14,6 +14,7 @@ import {
   Image,
   useDisclosure,
   Img,
+  DrawerFooter,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import CityLogo from "..//../assets/logos/CityLogo.png";
@@ -21,7 +22,7 @@ import CityLogo from "..//../assets/logos/CityLogo.png";
 const DashBoardHeader = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [searchText, setSearchText] = useState('');
-
+const btnRef = React.useRef()
   const handleSearch = () => {
     // Handle search functionality here
     console.log(`Searching for: ${searchText}`);
@@ -72,15 +73,30 @@ const DashBoardHeader = () => {
       </Flex>
 
       {/* Side Drawer */}
-      <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+      <Button ref={btnRef} colorScheme='teal' onClick={onOpen}>
+        Open
+      </Button>
+      <Drawer
+        isOpen={isOpen}
+        placement='left'
+        onClose={onClose}
+        finalFocusRef={btnRef}
+      >
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Side Drawer</DrawerHeader>
+          <DrawerHeader>Create your account</DrawerHeader>
+
           <DrawerBody>
-            {/* Add content for the side drawer */}
-            {/* For example, navigation links */}
+            <Input placeholder='Type here...' />
           </DrawerBody>
+
+          <DrawerFooter>
+            <Button variant='outline' mr={3} onClick={onClose}>
+              Cancel
+            </Button>
+            <Button colorScheme='blue'>Save</Button>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>

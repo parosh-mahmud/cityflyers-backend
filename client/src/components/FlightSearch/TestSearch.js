@@ -29,8 +29,8 @@ const TestSearch = () => {
     JourneyType: "1",
     Segments: [
       {
-        Origin: "JSR",
-        Destination: "DAC",
+        Origin: "DAC",
+        Destination: "JSR",
         CabinClass: "1",
         DepartureDateTime: "2023-10-10",
       },

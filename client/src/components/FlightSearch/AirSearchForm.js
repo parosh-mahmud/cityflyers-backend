@@ -65,12 +65,7 @@ const SearchFlight = () => {
               
 
             </Box>
-            <Button colorScheme="red" ml={2}>
-                <Flex alignItems="center">
-                  <SearchIcon mr={2} />
-                  Search
-                </Flex>
-              </Button>
+            
           </TabPanel>
           {/* Additional TabPanels for other tabs */}
           <TabPanel>

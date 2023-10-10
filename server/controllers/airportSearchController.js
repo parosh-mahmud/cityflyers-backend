@@ -8,22 +8,23 @@ const accessAirportList = asyncHandler(async (req, res) => {
   try {
     const query = req.query.query.toLowerCase(); // Convert the query to lowercase for case-insensitive search
 
-    // Filter airports that match the query in either name or code
-    const filteredAirports = airports.filter(
-      (airport) =>
-        airport.name.toLowerCase().includes(query) ||
-        airport.iata.toLowerCase().includes(query) ||
-        airport.city.toLowerCase().includes(query) ||
-        airport.country.toLowerCase().includes(query)
-        );
+    // Create a RegEx pattern for matching the query in name or code
+    const regexPattern = new RegExp(query, 'i'); // 'i' flag for case-insensitive search
 
-    // Map the filtered airports to the desired data structure
-    const airportList = filteredAirports.map((airport) => ({
-      name: airport.name,
-      code: airport.iata,
-      city: airport.city,
-      country: airport.country,
-    }));
+    // Filter airports that match the query using RegEx
+    const filteredAirports = airports.filter((airport) =>
+      regexPattern.test(airport.name) || regexPattern.test(airport.iata)
+    );
+
+    // Get the first 10 matching airport names or IATA codes
+    const airportList = filteredAirports
+      .filter((_, index) => index < 10)
+      .map((airport) => ({
+        name: airport.name,
+        code: airport.iata,
+        city: airport.city,
+        country: airport.country,
+      }));
 
     // Send the airportList array as a JSON response to the frontend
     res.json(airportList);
@@ -32,6 +33,7 @@ const accessAirportList = asyncHandler(async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 // Example usage:
 // app.get('/api/airports/airportList', accessAirportList);
 
