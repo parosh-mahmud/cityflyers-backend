@@ -1,29 +1,47 @@
 const asyncHandler = require("express-async-handler");
 const airports = require('airport-codes-updated').toJSON();
 const { default: axios } = require("axios");
-const bearerToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRoZWNpdHlmbHllcnNAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy91c2VyZGF0YSI6Ijk1fDExMXwxMDMuMTI0LjI1MS4xNDcsMTkyLjE2OC4wLjEwNiIsIm5iZiI6MTY5NTg4MDI2OSwiZXhwIjoxNjk2NDg1MDY5LCJpYXQiOjE2OTU4ODAyNjksImlzcyI6Imh0dHA6Ly9hcGkuc2FuZGJveC5mbHlodWIuY29tIiwiYXVkIjoiYXBpLnNhbmRib3guZmx5aHViLmNvbSJ9.6JlQDpRAm9qxpAKUq2fXEZICMfDztohY4epFBcnyf5U';
+const bearerToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRoZWNpdHlmbHllcnNAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy91c2VyZGF0YSI6IjIwOTc4fDIxNTMxfDEwMy4xMjQuMjUxLjE0NywxMDMuMTI0LjI1MS4xNDciLCJuYmYiOjE2OTczMDk4NzgsImV4cCI6MTY5NzkxNDY3OCwiaWF0IjoxNjk3MzA5ODc4LCJpc3MiOiJodHRwczovL2FwaS5mbHlodWIuY29tIiwiYXVkIjoiYXBpLmZseWh1Yi5jb20ifQ.3An4oOBAWvkVz5V8-4dFxlSd8-J_NwYcixGe2bNT0pc';
 const {admin,db} = require('../config/firebaseConfig')
+
+
+
+
 
 const accessAirportList = asyncHandler(async (req, res) => {
   try {
     const query = req.query.query.toLowerCase(); // Convert the query to lowercase for case-insensitive search
 
-    // Create a RegEx pattern for matching the query in name or code
-    const regexPattern = new RegExp(query, 'i'); // 'i' flag for case-insensitive search
+    // Create a RegEx pattern for matching the query at the beginning of name or code
+    const regexPattern = new RegExp(`^${query}`, 'i'); // 'i' flag for case-insensitive search, '^' matches the start of the string
 
     // Filter airports that match the query using RegEx
     const filteredAirports = airports.filter((airport) =>
-      regexPattern.test(airport.name) || regexPattern.test(airport.iata)
+      regexPattern.test(airport.name) || regexPattern.test(airport.iata)||regexPattern.test(airport.city)||regexPattern.test(airport.country)
     );
 
-    // Get the first 10 matching airport names or IATA codes
+    // Sort the filteredAirports to prioritize airports with matching IATA codes
+    filteredAirports.sort((a, b) => {
+      const aIsMatch = regexPattern.test(a.iata);
+      const bIsMatch = regexPattern.test(b.iata);
+
+      if (aIsMatch && !bIsMatch) {
+        return -1;
+      } else if (!aIsMatch && bIsMatch) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
+    // Get the first 10 matching airport IATA codes and names
     const airportList = filteredAirports
-      .filter((_, index) => index < 10)
+      .slice(0, 6) // Get the first 6 results
       .map((airport) => ({
-        name: airport.name,
-        code: airport.iata,
-        city: airport.city,
-        country: airport.country,
+        code: airport.iata, // Include IATA code
+        name: airport.name, // Include airport name
+        city: airport.city, // Include
+        country: airport.country, // Include
       }));
 
     // Send the airportList array as a JSON response to the frontend

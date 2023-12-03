@@ -3,9 +3,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const passport = require('./config/passportConfig'); // Import your passport configuration
 const userRoutes = require('./routes/userRoutes');
+const logosRoutes= require('./routes/logosRoutes')
 const airportSearchRoutes = require('./routes/airportSearchRoutes');
-const scrapper = require('airline-logo-scapper');
-const airline = 'jet airways';
+const airSearchRoutes = require('./routes/airSearchRoutes')
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -19,7 +19,8 @@ app.use(passport.initialize());
 // Set up your routes
 app.use('/api/user', userRoutes);
 app.use('/api/airports', airportSearchRoutes);
-
+app.use('/api',airSearchRoutes);
+// app.use('/api/logos', logosRoutes);
 app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
@@ -36,16 +37,43 @@ app.get('/', (req, res) => {
 
 // getLogo(airline);
 
-app.get('/api/airlines', (req, res) => {
-  const airlinesRef = db.ref('airlines');
-  airlinesRef.once('value')
-    .then(snapshot => {
-      const airlines = snapshot.val();
-      res.json(airlines);
-    })
-    .catch(error => {
-      res.status(500).json({ error: error.message });
+// Endpoint for uploading logos
+app.post('/uploadLogos', async (req, res) => {
+  const logoFolderPath = '../server/airlines'; // Update this path to your logo folder
+
+  try {
+    const files = fs.readdirSync(logoFolderPath);
+    const uploadPromises = files.map(async (filename) => {
+      const filePath = path.join(logoFolderPath, filename);
+      const logoData = fs.readFileSync(filePath);
+      const storageRef = storageBucket.file(`logos/${filename}`);
+
+      await storageRef.save(logoData, {
+        metadata: {
+          contentType: 'image/png' // Set appropriate content type (image/png, image/jpeg, etc.)
+        }
+      });
+
+      const downloadUrl = await storageRef.getSignedUrl({
+        action: 'read',
+        expires: '03-01-2500' // Set an appropriate expiration date
+      });
+
+      // Add logo data to Firestore
+      await db.collection('airlineLogos').add({
+        filename: filename,
+        downloadUrl: downloadUrl[0] // Get the first URL from the array
+      });
+
+      console.log(`Logo ${filename} uploaded and added to Firestore.`);
     });
+
+    await Promise.all(uploadPromises);
+    res.status(200).json({ message: 'Logos uploaded successfully.' });
+  } catch (error) {
+    console.error('Error uploading logos:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 app.listen(port, () => {

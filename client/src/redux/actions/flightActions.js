@@ -7,3 +7,13 @@ export const setFlights = (flights) => {
   };
 };
 
+export const setSearchId = (searchId) => ({
+  type: actionTypes.SET_SEARCH_ID,
+  payload: searchId
+});
+
+export const setSelectedResultId = (resultId) => ({
+  type: actionTypes.SET_SELECTED_RESULT_ID,
+  payload: resultId
+});
+

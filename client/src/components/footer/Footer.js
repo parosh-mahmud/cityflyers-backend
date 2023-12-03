@@ -1,47 +1,49 @@
-// Footer.js
-
 import React from 'react';
 import {
   Box,
-  Text,
+  Typography,
   Link,
-  Flex,
-  VStack,
+  Grid,
   Divider,
-  Spacer, // Added Spacer for alignment
-} from '@chakra-ui/react';
+  Container,
+} from '@mui/material';
 
 const Footer = () => {
   return (
-    <Box bg="gray.200" py="4" mt="50px">
-      <Flex justify="center">
-        <VStack spacing="2">
-          <Text fontSize="lg">Discover</Text>
-          <Link href="#">Home</Link>
-          <Link href="#">Terms</Link>
-          <Link href="#">Talent & Culture</Link>
-          <Link href="#">Refund Policy</Link>
-          <Link href="#">EMI Policy</Link>
-          <Link href="#">Privacy Policy</Link>
-          <Link href="#">Payment Methods</Link>
-        </VStack>
-        <Spacer /> {/* Add Spacer for alignment */}
-        <VStack spacing="2">
-          <Text fontSize="lg">Need Help ?</Text>
-          <Link href="#">We are Always here for you!</Link>
-          <Text>Knock us on Messenger anytime</Text>
-          <Text>or Call our Hotline (10AM - 10PM).</Text>
-        </VStack>
-      </Flex>
-      <Divider my="4" />
-      <Flex justify="space-between" align="center" px="4">
-        <Text>&copy; {new Date().getFullYear()} Cityflyers</Text>
-        <VStack spacing="2">
-          <Link href="#">Contact</Link>
-          <Link href="mailto:info@Cityflyers.com">info@Cityflyers.com</Link>
-          <Link href="tel:+88096******">+88 ********</Link>
-        </VStack>
-      </Flex>
+    <Box bgcolor="gray.200" py={4} mt={50}>
+      <Container>
+        <Grid container justifyContent="center" spacing={2}>
+          <Grid item xs={12} md={6}>
+            <Typography variant="h6">Discover</Typography>
+            <Link href="#" color="inherit">Home</Link>
+            <Link href="#" color="inherit">Terms</Link>
+            <Link href="#" color="inherit">Talent & Culture</Link>
+            <Link href="#" color="inherit">Refund Policy</Link>
+            <Link href="#" color="inherit">EMI Policy</Link>
+            <Link href="#" color="inherit">Privacy Policy</Link>
+            <Link href="#" color="inherit">Payment Methods</Link>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography variant="h6">Need Help ?</Typography>
+            <Link href="#" color="inherit">We are Always here for you!</Link>
+            <Typography variant="body2">Knock us on Messenger anytime</Typography>
+            <Typography variant="body2">or Call our Hotline (10AM - 10PM).</Typography>
+          </Grid>
+        </Grid>
+        <Divider my={4} />
+        <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
+          <Grid item>
+            <Typography variant="body2">&copy; {new Date().getFullYear()} Cityflyers</Typography>
+          </Grid>
+          <Grid item>
+            <Grid container spacing={1}>
+              <Grid item><Link href="#">Contact</Link></Grid>
+              <Grid item><Link href="mailto:info@Cityflyers.com">info@Cityflyers.com</Link></Grid>
+              <Grid item><Link href="tel:+88096******">+88 ********</Link></Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Container>
     </Box>
   );
 };

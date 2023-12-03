@@ -32,7 +32,7 @@ const TestSearch = () => {
         Origin: "DAC",
         Destination: "JSR",
         CabinClass: "1",
-        DepartureDateTime: "2023-10-10",
+        DepartureDateTime: "2023-10-20",
       },
     ],
   });
@@ -50,7 +50,7 @@ const TestSearch = () => {
     e.preventDefault();
     setLoading(true);
 
-    const bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRoZWNpdHlmbHllcnNAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy91c2VyZGF0YSI6IjIwOTc4fDIxNTMxfDEwMy4xMjQuMjUxLjE0NywxMDMuMTI0LjI1MS4xNDciLCJuYmYiOjE2OTY1NjM2NjAsImV4cCI6MTY5NzE2ODQ2MCwiaWF0IjoxNjk2NTYzNjYwLCJpc3MiOiJodHRwczovL2FwaS5mbHlodWIuY29tIiwiYXVkIjoiYXBpLmZseWh1Yi5jb20ifQ.wuORS6qsVQ6x8V_lALFXi8mmvA_s-3G8tVSbfUsswf0"; // Replace with your actual bearer token
+    const bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRoZWNpdHlmbHllcnNAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy91c2VyZGF0YSI6IjIwOTc4fDIxNTMxfDEwMy4xMjQuMjUxLjE0NywxMDMuMTI0LjI1MS4xNDciLCJuYmYiOjE2OTczMDk4NzgsImV4cCI6MTY5NzkxNDY3OCwiaWF0IjoxNjk3MzA5ODc4LCJpc3MiOiJodHRwczovL2FwaS5mbHlodWIuY29tIiwiYXVkIjoiYXBpLmZseWh1Yi5jb20ifQ.3An4oOBAWvkVz5V8-4dFxlSd8-J_NwYcixGe2bNT0pc"; // Replace with your actual bearer token
 
     try {
       const response = await axios.post('https://api.flyhub.com/api/v1/AirSearch', formData, {

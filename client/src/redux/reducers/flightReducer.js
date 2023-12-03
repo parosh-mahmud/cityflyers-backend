@@ -1,7 +1,8 @@
-import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
-  flights: [], // Ensure this is initially an empty array
+  flights: [],
+  searchId: null,
+  selectedResultId: null // Ensure this is initially an empty array
   // other initial state properties
 };
 
@@ -12,6 +13,8 @@ const flightReducer = (state = initialState, action) => {
         ...state,
         flights: action.payload,
       };
+
+      
     default:
       return state;
   }
