@@ -94,13 +94,15 @@ const resultsArray = flightSearchData && flightSearchData[0] && flightSearchData
                 </Box>
                  
               </Box>
-              <Box>
-       
-     {flightSearchData.Results && flightSearchData.Results.map((flight) => (
-  <FlightCard key={flight.ResultID} flightData={flight} onSelect={() => handleSelect(flight.ResultID)} />
-))}
-
-      </Box>
+             <Box style={{ marginTop: '10px' }}>
+  {flightSearchData.Results &&
+    flightSearchData.Results.map((flight, index) => (
+      <div key={flight.ResultID}>
+        <FlightCard flightData={flight} onSelect={() => handleSelect(flight.ResultID)} />
+        {index < flightSearchData.Results.length - 1 && <hr style={{ margin: '10px 0' }} />}
+      </div>
+    ))}
+</Box>
             </Paper>
             
           </Grid>

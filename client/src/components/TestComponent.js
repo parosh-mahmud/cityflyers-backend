@@ -17,20 +17,35 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   firstBox: {
-    width: '90%',
+    width: '60%', // Adjusted width for the first box
     backgroundColor: 'lightblue',
     padding: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
-    
     justifyContent: 'flex-end',
     position: 'relative',
     [theme.breakpoints.down('sm')]: {
       width: '100%',
+      marginBottom: theme.spacing(2),
     },
   },
+  nestedBoxes: {
+    display: 'flex',
+    flexDirection: 'row', // Set to row
+    justifyContent: 'space-between', // Adjusted to space-between for spacing
+  },
+  nestedBox: {
+    width: '50%', // Adjusted width for each nested box
+    backgroundColor: 'lightcoral', // Adjusted background color for clarity
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    position: 'relative',
+    margin: theme.spacing(0, 1), // Add margin between nested boxes
+  },
   secondBox: {
-    width: '10%',
+    width: '40%', // Adjusted width for the second box
     backgroundColor: 'lightgreen',
     padding: theme.spacing(2),
     display: 'flex',
@@ -57,7 +72,25 @@ const TestComponent = () => {
     <div className={classes.container}>
       <Box className={classes.firstBox}>
         {/* Content for the first box */}
-        First Box (90%)
+        First Box (60%)
+        
+
+        {/* Nested Boxes */}
+        <Box className={classes.nestedBoxes}>
+          {/* Nested Box 1 */}
+          <Box className={classes.nestedBox}>
+            <h2>Nested Box 1 Content</h2>
+            <p>Some details about Nested Box 1...</p>
+          </Box>
+
+          {/* Nested Box 2 */}
+          <Box className={classes.nestedBox}>
+            <h2>Nested Box 2 Content</h2>
+            <p>Some details about Nested Box 2...</p>
+          </Box>
+
+          
+        </Box>
         <Button
           variant="contained"
           color="primary"
@@ -68,9 +101,10 @@ const TestComponent = () => {
           View Details
         </Button>
       </Box>
+      
       <Box className={classes.secondBox}>
         {/* Content for the second box */}
-        Second Box (10%)
+        Second Box (40%)
         <Button
           variant="contained"
           color="primary"

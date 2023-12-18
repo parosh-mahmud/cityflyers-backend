@@ -1,11 +1,75 @@
 
 import React, { useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, Tabs, Tab, Paper } from '@mui/material';
 // import { FlightTakeoff, FlightLand, ArrowRightAlt } from '@material-ui/icons';
 import { FaPlaneDeparture, FaPlaneArrival, FaArrowRight } from 'react-icons/fa';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { makeStyles } from '@mui/styles';
+import GoogleLogo from '..//..//assets/logos/GoogleLogo.png'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { useTheme } from '@mui/material/styles';
+import TabPanel from '@mui/lab/TabPanel';
+import { TabContext } from '@mui/lab'
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+    },
+  },
+  firstBox: {
+    width: '90%', // Adjusted width for the first box
+    backgroundColor: 'lightblue',
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    position: 'relative',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      marginBottom: theme.spacing(2),
+    },
+  },
+  nestedBoxes: {
+    display: 'flex',
+    flexDirection: 'row', // Set to row
+    justifyContent: 'space-between', // Adjusted to space-between for spacing
+  },
+  nestedBox: {
+    width: '50%', // Adjusted width for each nested box
+    backgroundColor: 'lightcoral', // Adjusted background color for clarity
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    position: 'relative',
+    margin: theme.spacing(0, 1), // Add margin between nested boxes
+  },
+  secondBox: {
+    width: '10%', // Adjusted width for the second box
+    backgroundColor: 'lightgreen',
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    position: 'relative',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
+  },
+  button: {
+    width: '100%',
+    marginTop: theme.spacing(1),
+    textAlign: 'right',
+  },
+}));
+
 
 const FlightCard = ({ flightData, onSelect }) => {
   const dispatch = useDispatch();
@@ -14,7 +78,23 @@ const FlightCard = ({ flightData, onSelect }) => {
   const [selectedAirPrice, setSelectedAirPrice] = useState(null);
   const SearchID = useSelector((state) => state.flight.searchID);
   const ResultID = flightData.ResultID;
+const classes = useStyles();
+  const theme = useTheme();
+  const [value, setValue] = useState(0); // State to track selected tab
+  
 
+  
+     const [activeTab, setActiveTab] = useState(0);
+  const [showDetails, setShowDetails] = useState(false);
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
+
+ const handleViewDetails = () => {
+  setShowDetails((prevShowDetails) => !prevShowDetails);
+  setActiveTab(0); // Set the default tab to open when "View Details" is clicked
+};
   const calculateTotalAmount = () => {
     const baseFare = flightData.Fares[0].BaseFare;
     const tax = flightData.Fares[0].Tax;
@@ -58,61 +138,103 @@ const FlightCard = ({ flightData, onSelect }) => {
   };
 
   return (
-    <Box
-      border="1px solid"
-      borderRadius="md"
-      
-      mb={4}
-      height="150px" // Increased height to accommodate the button at the bottom
-      bgcolor="lightgray"
-      color="black"
-      boxShadow="md"
-      display="flex"
-      flexDirection="column" // Changed to column layout
-      justifyContent="space-between" // Added space-between to separate the top and bottom content
-      alignItems="center"
-      overflow="hidden"
-      position="relative"
-    >
-      <Box display="flex" flexWrap="wrap" flex="1">
-        <FlightInfoItem label="Journey Duration" value={`${segment.JourneyDuration} minutes`} />
-        <FlightInfoItem label="Aircraft" value={segment.Equipment || 'N/A'} />
-      </Box>
-      <Box width="100%" display="flex" justifyContent="space-between" alignItems="flex-end">
+     <TabContext value={activeTab.toString()}>
+   <div className={classes.container}>
+      <Box className={classes.firstBox}>
+        {/* Content for the first box */}
+        First Box (90%)
+        
+
+        {/* Nested Boxes */}
+        <Box className={classes.nestedBoxes}>
+          {/* Nested Box 1 */}
+          <Box className={classes.nestedBox}>
+            <Box sx={{display:'flex',flexDirection:'column',justifyContent:'left'}}>
+              {/* logo and texts */}
+              <Box sx={{display:'flex'}}>
+              <img src={GoogleLogo} alt="Girl in a jacket" width="50" height="60"></img>
+              <Box>
+                <Typography>dfds</Typography>
+                <Typography>swddd</Typography>
+              </Box>
+              </Box>
+
+              <Box>
+                <Typography> sdfdsf</Typography>
+                </Box>
+              
+
+            </Box>
+            
+          </Box>
+
+          {/* Nested Box 2 */}
+          <Box className={classes.nestedBox}>
+            <h2>Nested Box 2 Content</h2>
+            <p>Some details about Nested Box 2...</p>
+          </Box>
+
+          
+        </Box>
         <Button
-          variant="outlined"
+          variant="contained"
           color="primary"
-          size="small" // Reduced button height
-          fullWidth
-          onClick={() => {
-            // Add functionality for viewing details here
-            // You can navigate to a details page or show a modal, for example.
-          }}
+          onClick={handleViewDetails}
+          className={classes.button}
+          style={{ justifyContent: 'flex-end' }}
+          endIcon={<ArrowDropDownIcon />}
         >
           View Details
         </Button>
+       {/* Additional content shown when View Details button is clicked */}
+          {showDetails && (
+            <Paper>
+              <Tabs
+                value={activeTab}
+                onChange={handleTabChange}
+                indicatorColor="primary"
+                textColor="primary"
+                orientation="horizontal"
+                variant="scrollable"
+                scrollButtons
+                allowScrollButtonsMobile
+                sx={{
+                  width: 'auto',
+                  borderTopLeftRadius: '5px',
+                  borderTopRightRadius: '5px',
+                  backgroundColor: 'white',
+                  margin: 'auto',
+                }}
+              >
+                <Tab label="Flight" value="0" />
+                {/* Add other tabs as needed */}
+              </Tabs>
 
-        
-        <Box
-          width="200px"
-          bgcolor="teal"
-          color="white"
-          textAlign="center"
-          
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-        >
-          <Typography mb={2} fontWeight="bold">
-            Total Amount:
-          </Typography>
-          <Typography fontSize="lg">{calculateTotalAmount()} BDT</Typography>
-          <Button onClick={handleSelect} style={{ color: 'white' }} mt={-3} fullWidth>
-            Select
-          </Button>
-        </Box>
+              <TabPanel value="0">
+                {/* Content for Flight Tab */}
+                {/* ... */}
+              </TabPanel>
+              {/* Add other TabPanels for additional tabs */}
+            </Paper>
+          )}
       </Box>
-    </Box>
+      
+      
+      <Box className={classes.secondBox}>
+        {/* Content for the second box */}
+        Second Box (10%)
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          style={{ justifyContent: 'flex-end' }}
+          startIcon={<ArrowForwardIcon />}
+        >
+          Select
+        </Button>
+      </Box>
+    </div>
+    </TabContext>
   );
 };
 
