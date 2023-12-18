@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSearchID, selectSearchID, selectResults } from '..//../redux/reducers/flightSliceNew';
 import FilterCalendar from './FilterCalender';
 import { selectFlightSearchData } from '../../redux/reducers/flightSlice';
+
 const recommendedBoxStyle = {
   width: '100%',
   height: '48px',
@@ -53,9 +54,9 @@ const resultsArray = flightSearchData && flightSearchData[0] && flightSearchData
 
   return (
     <LayoutPage>
-
- <Grid container spacing={2}>
-  {/* First Grid */}
+      {/* first grid */}
+ <Grid container spacing={2} style={{width:'98%',margin:'auto'}}>
+ 
   <Grid item xs={12}>
     <Paper style={{ height: 'auto', padding: 16 }}>
       {/* First Row with Background Color */}

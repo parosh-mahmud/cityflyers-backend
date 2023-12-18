@@ -1,63 +1,87 @@
+// TestComponent.js
+
 import React from 'react';
-import { Grid, Paper, Container } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { useTheme } from '@mui/material/styles';
 
 const useStyles = makeStyles((theme) => ({
-  containerGrid: {
-    height: '100vh', // Set the height of the outer container to 100% of the viewport height
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+    },
   },
-  firstGridItem: {
-    height: '100%',
-    width: '217px',
-  },
-  secondGridItem: {
-    height: '284px',
+  firstBox: {
     width: '90%',
-  },
-  thirdGridItem: {
-    height: '298px',
-    width: '10%',
-  },
-  paper: {
+    backgroundColor: 'lightblue',
     padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
+    display: 'flex',
+    flexDirection: 'column',
+    
+    justifyContent: 'flex-end',
+    position: 'relative',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
+  },
+  secondBox: {
+    width: '10%',
+    backgroundColor: 'lightgreen',
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    position: 'relative',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
+  },
+  button: {
+    width: '100%',
+    marginTop: theme.spacing(1),
+    textAlign: 'right',
   },
 }));
 
 const TestComponent = () => {
   const classes = useStyles();
-return (
-    <Grid container spacing={2}>
-      {/* First Grid */}
-      <Grid item xs={12}>
-        <Paper style={{ height: 217, padding: 16 }}>
-          {/* Content for the first Paper */}
-          First Grid - Paper height: 217px
-        </Paper>
-      </Grid>
+  const theme = useTheme();
 
-      {/* Second Grid */}
-      <Grid item xs={12}>
-        <Grid container spacing={2}>
-          {/* First Grid within the Second Grid */}
-          <Grid item xs={9}>
-            <Paper style={{ height: '100%', padding: 16 }}>
-              {/* Content for the first Paper within the Second Grid */}
-              First Grid in Second Grid - 90%
-            </Paper>
-          </Grid>
-
-          {/* Second Grid within the Second Grid */}
-          <Grid item xs={3}>
-            <Paper style={{ height: '100%', padding: 16 }}>
-              {/* Content for the second Paper within the Second Grid */}
-              Second Grid in Second Grid - 10%
-            </Paper>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+  return (
+    <div className={classes.container}>
+      <Box className={classes.firstBox}>
+        {/* Content for the first box */}
+        First Box (90%)
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          style={{ justifyContent: 'flex-end' }}
+          endIcon={<ArrowDropDownIcon />}
+        >
+          View Details
+        </Button>
+      </Box>
+      <Box className={classes.secondBox}>
+        {/* Content for the second box */}
+        Second Box (10%)
+        <Button
+          variant="contained"
+          color="primary"
+          className={classes.button}
+          style={{ justifyContent: 'flex-end' }}
+          startIcon={<ArrowForwardIcon />}
+        >
+          Select
+        </Button>
+      </Box>
+    </div>
   );
 };
 

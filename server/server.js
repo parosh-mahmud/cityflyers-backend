@@ -3,12 +3,19 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const passport = require('./config/passportConfig'); // Import your passport configuration
 const userRoutes = require('./routes/userRoutes');
-const logosRoutes= require('./routes/logosRoutes')
+
 const airportSearchRoutes = require('./routes/airportSearchRoutes');
 const airSearchRoutes = require('./routes/airSearchRoutes')
-
+const logoRoutes = require('./routes/airlineLogoRoute')
 const app = express();
 const port = process.env.PORT || 5000;
+
+
+
+// const allData = require('airline-iata-code')
+
+// const data = allData('BS');
+// console.log(data);
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -20,6 +27,7 @@ app.use(passport.initialize());
 app.use('/api/user', userRoutes);
 app.use('/api/airports', airportSearchRoutes);
 app.use('/api',airSearchRoutes);
+app.use('/api',logoRoutes)
 // app.use('/api/logos', logosRoutes);
 app.get('/', (req, res) => {
   res.send('Hello, World!');
