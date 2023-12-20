@@ -137,45 +137,173 @@ const FlightCard = ({ flightData, onSelect }) => {
   };
 
   return (
+
+
+
     <TabContext value={activeTab.toString()}>
+
+
+
+
       <div className={classes.container}>
+
         <Box className={classes.firstBox}>
           {/* Content for the first box */}
+           <div style={{ display: 'flex' }}>
+      {/* First Box */}
+      <Box
+        style={{
+          backgroundColor: '#2196F3', // Material-UI primary color
+          width: '50%',
+          padding: '20px',
+          display: 'flex',
+          flexDirection: 'row',
+        }}
+      >
+        <Box
+          style={{
+            backgroundColor: '#FFC107', // Material-UI yellow color
+            flex: '1',
+            margin: '5px',
+            padding: '10px',
+          }}
+        >
+          Box 1.1
+        </Box>
+        <Box
+          style={{
+            backgroundColor: '#FF5722', // Material-UI deep orange color
+            flex: '1',
+            margin: '5px',
+            padding: '10px',
+          }}
+        >
+          Box 1.2
+        </Box>
+      </Box>
+
+      {/* Second Box */}
+      <Box
+        style={{
+          backgroundColor: '#4CAF50', // Material-UI green color
+          width: '50%',
+          padding: '20px',
+          display: 'flex',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+        }}
+      >
+        <Box
+          style={{
+            backgroundColor: '#E91E63', // Material-UI pink color
+            flex: '1',
+            margin: '5px',
+            padding: '10px',
+          }}
+        >
+          Box 2.1
+        </Box>
+        <Box
+          style={{
+            backgroundColor: '#9C27B0', // Material-UI purple color
+            flex: '1',
+            margin: '5px',
+            padding: '10px',
+          }}
+        >
+          Box 2.2
+        </Box>
+        <Box
+          style={{
+            backgroundColor: '#673AB7', // Material-UI deep purple color
+            flex: '1',
+            margin: '5px',
+            padding: '10px',
+          }}
+        >
+          Box 2.3
+        </Box>
+        <Box
+          style={{
+            backgroundColor: '#3F51B5', // Material-UI indigo color
+            flex: '1',
+            margin: '5px',
+            padding: '10px',
+          }}
+        >
+          Box 2.4
+        </Box>
+      </Box>
+    </div>
+
+
+
+    
           First Box (90%)
           {/* Nested Boxes */}
           <Box className={classes.nestedBoxes}>
             {/* Nested Box 1 */}
             <Box className={classes.nestedBox}>
               <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "left",
-                }}>
-                {/* logo and texts */}
-                <Box sx={{ display: "flex" }}>
-                  <img
-                    src={GoogleLogo}
-                    alt='Girl in a jacket'
-                    width='50'
-                    height='60'></img>
-                  <Box>
-                    <Typography>
-                      <FlightInfoItem
-                        label='Flight Number'
-                        value={
-                          segment.Airline ? segment.Airline.FlightNumber : "N/A"
-                        }
-                      />
-                    </Typography>
-                    <Typography>swddd</Typography>
-                  </Box>
-                </Box>
+  sx={{
+    display: "flex",
+    flexDirection: "column",
+    
+    justifyContent: "center",
+  
+  }}
+>
+  {/* logo and texts */}
+  <Box sx={{ display: "flex" }}>
+    <img
+      src={GoogleLogo}
+      alt="Girl in a jacket"
+      width="50"
+      height="60"
+    />
+    <Box>
+      <Typography>
+        <FlightInfoItem
+          label="Flight Number"
+          value={
+            segment.Airline
+              ? segment.Airline.FlightNumber
+              : "N/A"
+          }
+        />
+      </Typography>
+      <Typography>
+        <FlightInfoItem
+          label="Flight Number"
+          value={
+            segment.Airline
+              ? segment.Airline.FlightNumber
+              : "N/A"
+          }
+        />
+      </Typography>
+    </Box>
+  </Box>
 
-                <Box>
-                  <Typography> sdfdsf</Typography>
-                </Box>
-              </Box>
+  <Box>
+    <Typography>
+      <FlightInfoItem
+        label=""
+        value={
+          segment.Airline
+            ? segment.Airline.AirlineName
+            : "N/A"
+        }
+      />
+    </Typography>
+  </Box>
+
+  {/* New Box (sdlfj) to the right */}
+  <Box sx={{alignSelf:'end'}}>
+    <Typography>sdlfj</Typography>
+  </Box>
+</Box>
+              
             </Box>
 
             {/* Nested Box 2 */}

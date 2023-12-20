@@ -1,120 +1,107 @@
-// TestComponent.js
-
 import React from 'react';
-import { makeStyles } from '@mui/styles';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import { Box, Button } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { useTheme } from '@mui/material/styles';
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column',
-    },
-  },
-  firstBox: {
-    width: '60%', // Adjusted width for the first box
-    backgroundColor: 'lightblue',
-    padding: theme.spacing(2),
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-    position: 'relative',
-    [theme.breakpoints.down('sm')]: {
-      width: '100%',
-      marginBottom: theme.spacing(2),
-    },
-  },
-  nestedBoxes: {
-    display: 'flex',
-    flexDirection: 'row', // Set to row
-    justifyContent: 'space-between', // Adjusted to space-between for spacing
-  },
-  nestedBox: {
-    width: '50%', // Adjusted width for each nested box
-    backgroundColor: 'lightcoral', // Adjusted background color for clarity
-    padding: theme.spacing(2),
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-    position: 'relative',
-    margin: theme.spacing(0, 1), // Add margin between nested boxes
-  },
-  secondBox: {
-    width: '40%', // Adjusted width for the second box
-    backgroundColor: 'lightgreen',
-    padding: theme.spacing(2),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    position: 'relative',
-    [theme.breakpoints.down('sm')]: {
-      width: '100%',
-    },
-  },
-  button: {
-    width: '100%',
-    marginTop: theme.spacing(1),
-    textAlign: 'right',
-  },
-}));
 
 const TestComponent = () => {
-  const classes = useStyles();
-  const theme = useTheme();
-
   return (
-    <div className={classes.container}>
-      <Box className={classes.firstBox}>
-        {/* Content for the first box */}
-        First Box (60%)
-        
-
-        {/* Nested Boxes */}
-        <Box className={classes.nestedBoxes}>
-          {/* Nested Box 1 */}
-          <Box className={classes.nestedBox}>
-            <h2>Nested Box 1 Content</h2>
-            <p>Some details about Nested Box 1...</p>
-          </Box>
-
-          {/* Nested Box 2 */}
-          <Box className={classes.nestedBox}>
-            <h2>Nested Box 2 Content</h2>
-            <p>Some details about Nested Box 2...</p>
-          </Box>
-
-          
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      {/* First Box */}
+      <Box
+        style={{
+          backgroundColor: '#2196F3', // Material-UI primary color
+          width: '50%',
+          padding: '20px',
+          display: 'flex',
+          flexDirection: 'row',
+        }}
+      >
+        <Box
+          style={{
+            backgroundColor: '#FFC107', // Material-UI yellow color
+            flex: '1',
+            margin: '5px',
+            padding: '10px',
+          }}
+        >
+          Box 1.1
         </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          style={{ justifyContent: 'flex-end' }}
-          endIcon={<ArrowDropDownIcon />}
+        <Box
+          style={{
+            backgroundColor: '#FF5722', // Material-UI deep orange color
+            flex: '1',
+            margin: '5px',
+            padding: '10px',
+          }}
         >
-          View Details
-        </Button>
+          Box 1.2
+        </Box>
       </Box>
-      
-      <Box className={classes.secondBox}>
-        {/* Content for the second box */}
-        Second Box (40%)
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          style={{ justifyContent: 'flex-end' }}
-          startIcon={<ArrowForwardIcon />}
+
+      {/* Second Box */}
+      <Box
+        style={{
+          backgroundColor: '#4CAF50', // Material-UI green color
+          width: '50%',
+          padding: '20px',
+          display: 'flex',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+        }}
+      >
+        <Box
+          style={{
+            backgroundColor: '#E91E63', // Material-UI pink color
+            flex: '1',
+            margin: '5px',
+            padding: '10px',
+          }}
         >
-          Select
-        </Button>
+          Box 2.1
+        </Box>
+        <Box
+          style={{
+            backgroundColor: '#9C27B0', // Material-UI purple color
+            flex: '1',
+            margin: '5px',
+            padding: '10px',
+          }}
+        >
+          Box 2.2
+        </Box>
+        <Box
+          style={{
+            backgroundColor: '#673AB7', // Material-UI deep purple color
+            flex: '1',
+            margin: '5px',
+            padding: '10px',
+          }}
+        >
+          Box 2.3
+        </Box>
+        <Box
+          style={{
+            backgroundColor: '#3F51B5', // Material-UI indigo color
+            flex: '1',
+            margin: '5px',
+            padding: '10px',
+          }}
+        >
+          Box 2.4
+        </Box>
       </Box>
+
+      {/* View Details Button */}
+      <Button
+        style={{
+          width: '50%',
+          margin: '10px auto',
+          backgroundColor: '#2196F3',
+          color: 'white',
+        }}
+        endIcon={<ArrowDropDownIcon />}
+      >
+        View Details
+      </Button>
     </div>
   );
 };
