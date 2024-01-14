@@ -1,14 +1,16 @@
 // FlightResults.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography,Grid,Paper } from '@mui/material'; // Import Material-UI components
 import LayoutPage from '../../pages/LayoutPage';
 import FlightCard from './FlightCard';
 import { useDispatch, useSelector } from 'react-redux';
 // import { setSearchID, setSelectedResultID } from '../../redux/reducers/flightSlice';
 import { setSearchID, selectSearchID, selectResults } from '..//../redux/reducers/flightSliceNew';
-import FilterCalendar from './FilterCalender';
+import FilterByDate from '../filterComponent/FilterByDate';
 import { selectFlightSearchData } from '../../redux/reducers/flightSlice';
-
+import FilterComponent from '../filterComponent/FilterComponent';
+import SearchForm from '../FlightSearch/SearchForm';
+import RecommendFilter from '../filterComponent/RecommendFilter';
 const recommendedBoxStyle = {
   width: '100%',
   height: '48px',
@@ -42,15 +44,17 @@ const resultsArray = flightSearchData && flightSearchData[0] && flightSearchData
 
   // Update searchID in Redux store when FlightResults component mounts
   useEffect(() => {
+    const airlineCode = flightSearchData[0]?.Results[0]?.Validatingcarrier;
+console.log(airlineCode);
+console.log(flightSearchData)
     if (searchID) {
       dispatch(setSearchID(searchID));
     }
-  }, [dispatch, searchID]);
+  }, [dispatch, searchID, flightSearchData]);
 
-  const handleSelect = (selectedResultID) => {
-    console.log('Search ID:', searchID);
-    console.log('Selected Result ID:', selectedResultID);
-  };
+
+
+
 
   return (
     <LayoutPage>
@@ -60,16 +64,16 @@ const resultsArray = flightSearchData && flightSearchData[0] && flightSearchData
   <Grid item xs={12}>
     <Paper style={{ height: 'auto', padding: 16 }}>
       {/* First Row with Background Color */}
-      <Box sx={{ marginBottom: 2, backgroundColor: 'lightblue', padding: 2,height:'80px' }}>
-        <Typography variant="h6">First Row</Typography>
+      <Box sx={{ marginBottom: 2, backgroundColor: 'lightblue', padding: 2,height:'auto' }}>
+        
         {/* Content for the first row */}
-       
+       <SearchForm searchButtonLabel="Modify Search" />
       </Box>
 
       {/* Second Row with Background Color */}
-      <Box sx={{ backgroundColor: 'lightgreen', padding: 2, display: 'flex',
+      <Box sx={{ backgroundColor: 'lightgray', padding: 2, display: 'flex',
         justifyContent: 'center', alignItems:'center'}}>
-        <FilterCalendar/>
+        <FilterByDate />
         {/* Content for the second row */}
         
       </Box>
@@ -83,22 +87,20 @@ const resultsArray = flightSearchData && flightSearchData[0] && flightSearchData
           <Grid item xs={9}>
             <Paper style={{ height: '100%', padding: 16 }}>
               {/* Content for the first Paper within the Second Grid */}
-              <Box sx={{width:'100%',height:'36px',backgroundColor:'red'}}>
               
+              <Box sx={{width:'100%',minHeight:'36px',backgroundColor:'lightgray',border:'1px solid white',borderRadius:'5px'}}>
+              {/* content for filter Flight */}
+              <FilterComponent/>
               </Box>
-              <Box sx={{width:'100%',height:'48px',backgroundColor:'green',display:'flex',marginTop:'10px',marginBottom:'5px'}}>
-             <Box sx={recommendedBoxStyle}>
-                  <Box sx={boxStyle}>Recomanded</Box>
-                  <Box sx={boxStyle}>Cheapest</Box>
-                  <Box sx={boxStyle}>Fastest</Box>
-                </Box>
+              <Box sx={{width:'100%',minHeight:'80px',backgroundColor:'lightgray',display:'flex',marginTop:'10px',marginBottom:'5px',border:'1 px solid gray'}}>
+             <RecommendFilter />
                  
               </Box>
              <Box style={{ marginTop: '10px' }}>
   {flightSearchData.Results &&
     flightSearchData.Results.map((flight, index) => (
       <div key={flight.ResultID}>
-        <FlightCard flightData={flight} onSelect={() => handleSelect(flight.ResultID)} />
+        <FlightCard flightData={flight}  />
         {index < flightSearchData.Results.length - 1 && <hr style={{ margin: '10px 0' }} />}
       </div>
     ))}

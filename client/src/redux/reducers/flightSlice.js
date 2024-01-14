@@ -51,6 +51,21 @@ const flightSlice = createSlice({
   },
 });
 
+// Async action using Thunk middleware
+export const fetchFlightResults = (formData) => async (dispatch) => {
+  try {
+    // Make the API call using formData
+    const response = await axios.post('http://localhost:5000/api/airSearch', formData);
+    
+    // Dispatch the result to the store
+    dispatch(setFlightSearchData(response.data));
+    
+    console.log('API Response:', response.data);
+  } catch (error) {
+    console.error('Error fetching flight results:', error.message);
+  }
+};
+
 export const { setFlightSearchData } = flightSlice.actions;
 export const selectFlightSearchData = (state) => state.flight.searchData;
 

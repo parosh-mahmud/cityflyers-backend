@@ -1,6 +1,6 @@
 import React from 'react';
-import { createRoot } from 'react-dom';
-import './index.css'
+import ReactDOM from 'react-dom';
+import './index.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './redux/store';
@@ -11,9 +11,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 // Create a theme object
 const theme = createTheme();
 
-const root = createRoot(document.getElementById('root'));
-
-root.render(
+// Use ReactDOM.render instead of createRoot
+ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       {/* Wrap your App component inside ThemeProvider and pass the theme object */}
@@ -25,5 +24,6 @@ root.render(
         </Router>
       </ThemeProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
+  document.getElementById('root')
 );

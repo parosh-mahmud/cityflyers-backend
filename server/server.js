@@ -12,9 +12,9 @@ const port = process.env.PORT || 5000;
 
 
 
-// const allData = require('airline-iata-code')
+const allData = require('airline-iata-code')
 
-// const data = allData('BS');
+const data = allData();
 // console.log(data);
 
 app.use(bodyParser.json());
@@ -31,6 +31,30 @@ app.use('/api',logoRoutes)
 // app.use('/api/logos', logosRoutes);
 app.get('/', (req, res) => {
   res.send('Hello, World!');
+});
+
+// API endpoint to get airline information
+app.get('/api/airline/:code', async (req, res) => {
+  const airlineCode = req.params.code.toUpperCase(); // Ensure it's uppercase
+
+
+  try {
+    // Convert the object to an array
+    const dataArray = Object.values(data);
+
+
+    // Find the airline with the provided code
+    const airline = dataArray.find((item) => item.IATACode === airlineCode);
+
+    if (airline) {
+      res.json({ logoUrl: airline.logo });
+    } else {
+      res.status(404).json({ error: 'Airline not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching airline logo:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 // let getLogo = async (airline) => {

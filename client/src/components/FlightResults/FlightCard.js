@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Typography, Tabs, Tab, Paper } from "@mui/material";
 // import { FlightTakeoff, FlightLand, ArrowRightAlt } from '@material-ui/icons';
 import { FaPlaneDeparture, FaPlaneArrival, FaArrowRight } from "react-icons/fa";
@@ -13,18 +13,24 @@ import { useTheme } from "@mui/material/styles";
 import TabPanel from "@mui/lab/TabPanel";
 import { TabContext } from "@mui/lab";
 import { selectFlightSearchData } from "../../redux/reducers/flightSlice";
-
+import TabComponent from "../tabComponent/TabComponent";
+import FlightIcon from '@mui/icons-material/Flight';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import CircleIcon from '@mui/icons-material/Circle';
+import Skeleton from "@mui/material/Skeleton";
 const useStyles = makeStyles((theme) => ({
   container: {
+    backgroundColor:'lightgray',
     display: "flex",
     flexDirection: "row",
+    
     [theme.breakpoints.down("sm")]: {
       flexDirection: "column",
     },
   },
   firstBox: {
     width: "90%", // Adjusted width for the first box
-    backgroundColor: "lightblue",
+    
     padding: theme.spacing(2),
     display: "flex",
     flexDirection: "column",
@@ -42,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
   nestedBox: {
     width: "50%", // Adjusted width for each nested box
-    backgroundColor: "lightcoral", // Adjusted background color for clarity
+    
     padding: theme.spacing(2),
     display: "flex",
     flexDirection: "column",
@@ -52,12 +58,12 @@ const useStyles = makeStyles((theme) => ({
   },
   secondBox: {
     width: "10%", // Adjusted width for the second box
-    backgroundColor: "lightgreen",
+    
     padding: theme.spacing(2),
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     position: "relative",
     [theme.breakpoints.down("sm")]: {
       width: "100%",
@@ -68,9 +74,12 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
     textAlign: "right",
   },
+  
+  
+ 
 }));
 
-const FlightCard = ({ flightData, onSelect }) => {
+export const FlightCard = ({ flightData, onSelect, }) => {
   const flightDataFromApi = useSelector(selectFlightSearchData);
   console.log(flightDataFromApi);
   const dispatch = useDispatch();
@@ -85,6 +94,25 @@ const FlightCard = ({ flightData, onSelect }) => {
 
   const [activeTab, setActiveTab] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
+const [airlineLogoUrl, setAirlineLogoUrl] = useState(null);
+
+  useEffect(() => {
+    // Fetch the logo URL based on AirlineCode
+    const fetchLogoUrl = async () => {
+      try {
+        const response = await axios.get(`/api/airline/${segment.Airline.AirlineCode}`);
+        setAirlineLogoUrl(response.data.logoUrl); // Adjust based on your actual response structure
+      } catch (error) {
+        console.error('Error fetching airline logo:', error);
+      }
+    };
+
+    // Check if AirlineCode is available and fetch the logo
+    if (segment.Airline && segment.Airline.AirlineCode) {
+      fetchLogoUrl();
+    }
+  }, [segment.Airline]);
+
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -99,6 +127,22 @@ const FlightCard = ({ flightData, onSelect }) => {
     const tax = flightData.Fares[0].Tax;
     return baseFare + tax;
   };
+const calculateDuration = () => {
+    const depTime = new Date(segment.Origin.DepTime);
+    const arrTime = new Date(segment.Destination.ArrTime);
+
+    const durationInMinutes = (arrTime - depTime) / (1000 * 60); // Convert milliseconds to minutes
+
+    const hours = Math.floor(durationInMinutes / 60);
+    const minutes = durationInMinutes % 60;
+
+    if (hours > 0) {
+      return `${hours}H ${minutes}M`;
+    } else {
+      return `${minutes}M`;
+    }
+  };
+
 
   const handleSelect = async () => {
     try {
@@ -153,166 +197,206 @@ const FlightCard = ({ flightData, onSelect }) => {
       {/* First Box */}
       <Box
         style={{
-          backgroundColor: '#2196F3', // Material-UI primary color
+         
           width: '50%',
-          padding: '20px',
+         
           display: 'flex',
           flexDirection: 'row',
         }}
       >
         <Box
           style={{
-            backgroundColor: '#FFC107', // Material-UI yellow color
-            flex: '1',
-            margin: '5px',
-            padding: '10px',
+            
+             
+            flex: '8',
+           
+            display: 'flex',
+            justifyContent:'space-between',
+            alignItems:'center',
+            
+
           }}
         >
-          Box 1.1
+          <Box sx={{justifyContent:'center'}} >
+            {/* box 1.1 */}
+            <Box sx={{display:'flex'}}>
+              
+              <Box> 
+                {/* logo here */}
+               
+                {airlineLogoUrl && <img src={airlineLogoUrl} alt="Airline Logo" width="100" height="100" />}
+
+              </Box>
+              <Box sx={{}}>
+                {/* airline code + flight number */}
+                <Box sx={{display:"flex"}}>
+                <Typography >
+  <FlightInfoItem  isLoading={!flightData} valueStyle={{ fontWeight: 'bold' }} value={segment.Airline ? segment.Airline.AirlineCode : 'N/A'} />
+</Typography>
+
+<Typography >
+  <FlightInfoItem valueStyle={{ fontWeight: 'bold' }} value={segment.Airline ? segment.Airline.FlightNumber : 'N/A'} />
+</Typography>
+                </Box>
+
+                <Box><Typography><FlightInfoItem  isLoading={!flightData} label="Aircraft" value={segment.Equipment ? `${segment.Equipment}` : 'N/A'} /></Typography></Box>
+        
+              </Box>
+              
+            </Box>
+
+            <Box>
+              <Typography>
+                <FlightInfoItem  isLoading={!flightData}  value={segment.Airline ? segment.Airline.AirlineName : 'N/A'} />
+              </Typography>
+              
+              </Box>
+
+          </Box>
+         
+          <Box>
+
+          </Box>
         </Box>
         <Box
           style={{
-            backgroundColor: '#FF5722', // Material-UI deep orange color
-            flex: '1',
-            margin: '5px',
-            padding: '10px',
+            
+           display: 'flex',
+           flexDirection: 'column',
+            flex: '2',
+           
+            
+           
+            justifyContent: 'center', // Center content horizontally
+    alignItems: 'center', // Center content vertically
           }}
         >
-          Box 1.2
+           <Typography> <FlightInfoItem  isLoading={!flightData} valueStyle={{color:'blue',fontWeight:'bold',fontSize:'2rem',}}  value={segment.Origin ? segment.Origin.Airport.CityName : 'N/A'} /></Typography>
+          <Typography> <FlightInfoItem  isLoading={!flightData}  value={segment.Origin ? segment.Origin.Airport.CityCode : 'N/A'} /></Typography>
         </Box>
       </Box>
 
       {/* Second Box */}
       <Box
         style={{
-          backgroundColor: '#4CAF50', // Material-UI green color
+          
           width: '50%',
-          padding: '20px',
+          
           display: 'flex',
           flexDirection: 'row',
           flexWrap: 'wrap',
+          
         }}
       >
         <Box
           style={{
-            backgroundColor: '#E91E63', // Material-UI pink color
+           display: 'flex',
+           flexDirection: 'column',
+           justifyContent: 'center',
+           alignItems: 'center',
             flex: '1',
-            margin: '5px',
-            padding: '10px',
+            
+            
           }}
         >
-          Box 2.1
+          <Box sx={{marginTop:'25px'}}>
+            {/* time */}
+            <Typography> <FlightInfoItem  isLoading={!flightData} valueStyle={{fontWeight: 'bold',fontSize:'2rem'}}
+             
+              value={
+                segment.Destination
+                  ? new Date(segment.Origin.DepTime).toLocaleTimeString(
+                      'en-US',
+                      {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false,
+                      }
+                    )
+                  : 'N/A'
+              }
+              icon={<FaPlaneArrival />}
+            /></Typography>
+          </Box>
+
+          <Box >
+            {/* duration */}
+           
+            <FlightInfoItem  isLoading={!flightData} label={'Duration '}
+                      value={calculateDuration()}
+                      icon={<FaPlaneArrival />}
+                    />
+          </Box>
+        </Box>
+       <Box
+  style={{
+    
+    flex: '1',
+    
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }}
+>
+  <div style={{ transform: 'rotate(90deg)', }}>
+    <FlightIcon />
+    
+      
+   
+  </div>
+  <div style={{display:'flex'}} >
+    <MoreHorizIcon />   
+    <MoreHorizIcon />   
+   <CircleIcon/>
+  </div>
+
+</Box>
+        <Box
+          style={{
+           display: 'flex',
+           flexDirection: 'column',
+           justifyContent: 'center',
+           alignItems: 'center',
+            flex: '1',
+           
+          }}
+        >
+          <Typography> <FlightInfoItem  isLoading={!flightData} valueStyle={{fontWeight: 'bold',fontSize:'2rem'}}
+             
+              value={
+                segment.Destination
+                  ? new Date(segment.Destination.ArrTime).toLocaleTimeString(
+                      'en-US',
+                      {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false,
+                      }
+                    )
+                  : 'N/A'
+              }
+              icon={<FaPlaneArrival />}
+            />
+            </Typography>
         </Box>
         <Box
           style={{
-            backgroundColor: '#9C27B0', // Material-UI purple color
+            
             flex: '1',
-            margin: '5px',
-            padding: '10px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
-          Box 2.2
-        </Box>
-        <Box
-          style={{
-            backgroundColor: '#673AB7', // Material-UI deep purple color
-            flex: '1',
-            margin: '5px',
-            padding: '10px',
-          }}
-        >
-          Box 2.3
-        </Box>
-        <Box
-          style={{
-            backgroundColor: '#3F51B5', // Material-UI indigo color
-            flex: '1',
-            margin: '5px',
-            padding: '10px',
-          }}
-        >
-          Box 2.4
+          <Typography>
+            <FlightInfoItem  isLoading={!flightData} valueStyle={{fontSize:'2rem',color:'blue',fontWeight:'bold'}} value={segment.Destination ? segment.Destination.Airport.CityName : 'N/A'} />
+            <FlightInfoItem  isLoading={!flightData} value={segment.Destination ? segment.Destination.Airport.CityCode : 'N/A'} />
+          </Typography>
         </Box>
       </Box>
     </div>
-
-
-
-    
-          First Box (90%)
-          {/* Nested Boxes */}
-          <Box className={classes.nestedBoxes}>
-            {/* Nested Box 1 */}
-            <Box className={classes.nestedBox}>
-              <Box
-  sx={{
-    display: "flex",
-    flexDirection: "column",
-    
-    justifyContent: "center",
-  
-  }}
->
-  {/* logo and texts */}
-  <Box sx={{ display: "flex" }}>
-    <img
-      src={GoogleLogo}
-      alt="Girl in a jacket"
-      width="50"
-      height="60"
-    />
-    <Box>
-      <Typography>
-        <FlightInfoItem
-          label="Flight Number"
-          value={
-            segment.Airline
-              ? segment.Airline.FlightNumber
-              : "N/A"
-          }
-        />
-      </Typography>
-      <Typography>
-        <FlightInfoItem
-          label="Flight Number"
-          value={
-            segment.Airline
-              ? segment.Airline.FlightNumber
-              : "N/A"
-          }
-        />
-      </Typography>
-    </Box>
-  </Box>
-
-  <Box>
-    <Typography>
-      <FlightInfoItem
-        label=""
-        value={
-          segment.Airline
-            ? segment.Airline.AirlineName
-            : "N/A"
-        }
-      />
-    </Typography>
-  </Box>
-
-  {/* New Box (sdlfj) to the right */}
-  <Box sx={{alignSelf:'end'}}>
-    <Typography>sdlfj</Typography>
-  </Box>
-</Box>
-              
-            </Box>
-
-            {/* Nested Box 2 */}
-            <Box className={classes.nestedBox}>
-              <h2>Nested Box 2 Content</h2>
-              <p>Some details about Nested Box 2...</p>
-            </Box>
-          </Box>
-          <Button
+<Button
             variant='contained'
             color='primary'
             onClick={handleViewDetails}
@@ -321,113 +405,15 @@ const FlightCard = ({ flightData, onSelect }) => {
             endIcon={<ArrowDropDownIcon />}>
             View Details
           </Button>
-          {/* Additional content shown when View Details button is clicked */}
-          {showDetails && (
-            <Paper>
-              <Tabs
-                value={activeTab}
-                onChange={handleTabChange}
-                indicatorColor='primary'
-                textColor='primary'
-                orientation='horizontal'
-                variant='scrollable'
-                scrollButtons
-                allowScrollButtonsMobile
-                sx={{
-                  width: "auto",
-                  borderTopLeftRadius: "5px",
-                  borderTopRightRadius: "5px",
-                  backgroundColor: "white",
-                  margin: "auto",
-                }}>
-                <Tab label='Flight Details' value='0' />
-                <Tab label='Fare Summary' value='1' />
-                <Tab label='Baggage' value='3' />
-                <Tab label='Cancellation' value='4' />
-                <Tab label='Date Change' value='5' />
-                <Tab label='Fare Rules' value='6' />
-                <Tab label='Class' value='7' />
-                {/* Add other tabs as needed */}
-              </Tabs>
-
-              <TabPanel value='0'>
-                {/* Content for Flight Tab */}
-                <FlightInfoItem
-                  label='Operating Carrier'
-                  value={
-                    segment.Airline ? segment.Airline.OperatingCarrier : "N/A"
-                  }
-                />
-                <FlightInfoItem
-                  label='Flight Number'
-                  value={segment.Airline ? segment.Airline.FlightNumber : "N/A"}
-                />
-                <FlightInfoItem
-                  label='Airline Code'
-                  value={segment.Airline ? segment.Airline.AirlineCode : "N/A"}
-                />
-                <FlightInfoItem
-                  label='Airline Name'
-                  value={segment.Airline ? segment.Airline.AirlineName : "N/A"}
-                />
-                <FlightInfoItem
-                  label='Departure Airport'
-                  value={
-                    segment.Origin ? segment.Origin.Airport.AirportName : "N/A"
-                  }
-                />
-                <FlightInfoItem
-                  label='Destination Airport'
-                  value={
-                    segment.Destination
-                      ? segment.Destination.Airport.AirportName
-                      : "N/A"
-                  }
-                />
-                <FlightInfoItem
-                  label='Origin Airport Code'
-                  value={
-                    segment.Origin ? segment.Origin.Airport.AirportCode : "N/A"
-                  }
-                />
-                <FlightInfoItem
-                  label='Departure Time'
-                  value={segment.Origin ? segment.Origin.DepTime : "N/A"}
-                  icon={<FaPlaneDeparture />}
-                />
-                <FlightInfoItem
-                  label='Arrival Time'
-                  value={
-                    segment.Destination ? segment.Destination.ArrTime : "N/A"
-                  }
-                  icon={<FaPlaneArrival />}
-                />{" "}
-                <FlightInfoItem
-                  label='Journey Duration'
-                  value={
-                    segment.JourneyDuration
-                      ? `${segment.JourneyDuration} minutes`
-                      : "N/A"
-                  }
-                />{" "}
-                <FlightInfoItem
-                  label='Aircraft'
-                  value={segment.Equipment ? `${segment.Equipment}` : "N/A"}
-                />
-                {/* ... */}
-              </TabPanel>
-              <TabPanel value='1'></TabPanel>
-              {/* Add other TabPanels for additional tabs */}
-            </Paper>
-          )}
+         
         </Box>
 
         <Box className={classes.secondBox}>
           {/* Content for the second box */}
           <Typography>
-            <Typography fontSize='lg'>{calculateTotalAmount()} BDT</Typography>
+            <Typography fontSize='20px' fontWeight='bold'>BDT {calculateTotalAmount()} </Typography>
           </Typography>
-          Second Box (10%)
+          
           <Button
             variant='contained'
             color='primary'
@@ -436,18 +422,34 @@ const FlightCard = ({ flightData, onSelect }) => {
             endIcon={<ArrowForwardIcon />}>
             Select
           </Button>
+
+
+    
+         
         </Box>
       </div>
+
+
+       {/* Additional content shown when View Details button is clicked */}
+          {showDetails && (
+            <TabComponent
+          activeTab={activeTab}
+          handleTabChange={handleTabChange}
+          segment={flightData.segments[0]}
+        />
+          )}
     </TabContext>
   );
 };
 
-const FlightInfoItem = ({ label, value }) => (
-  <Box flex='1 1 50%' mb={2} display='flex' alignItems='center'>
-    <Typography>{label}:</Typography>
-    <Typography ml={1} variant='body2'>
-      {value}
-    </Typography>
+export const FlightInfoItem = ({ label, value, valueStyle , isLoading  }) => (
+  <Box flex="1 1 50%" display="flex" alignItems="center">
+    <Typography>{label}</Typography>
+    {isLoading ? (
+      <Skeleton width={50} height={20} style={{ marginLeft: 10 }} />
+    ) : (
+      <Typography style={valueStyle}>{value}</Typography>
+    )}
   </Box>
 );
 

@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
     
   };
 
-const SearchForm =  () => {
+export const SearchForm =  ({ searchButtonLabel}) => {
  const [selectedOption, setSelectedOption] = useState('oneway');
   const [selectedFromAirport, setSelectedFromAirport] = useState(airports[0]);
    const [selectedToAirport, setSelectedToAirport] = useState(airports[1]);
@@ -133,11 +133,13 @@ const [formData, setFormData] = useState({
         Origin: "DAC",
         Destination: "JSR",
         CabinClass: "1",
-        DepartureDateTime: "2023-10-20",
+       DepartureDateTime: "2023-10-20",
       },
     ],
   });
 
+
+ 
 
 const handleReturnDateChange = (date) => {
   // Close the return date popover after selecting a date
@@ -589,6 +591,10 @@ dispatch(setFlightSearchData(response.data));
     <Button 
           
         onClick={handleFormData}
+
+
+    
+        
           variant="contained"
           color="primary"
           style={{
@@ -604,7 +610,7 @@ dispatch(setFlightSearchData(response.data));
             
           }}
         >
-          Search
+          {searchButtonLabel || 'Search'}
         </Button>
 </>
 
