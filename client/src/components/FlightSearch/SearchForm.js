@@ -18,7 +18,7 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import '..//../index.css'
 import '@fontsource/poppins';
 import axios from 'axios';
-
+import { fetchFlightResults } from '../../redux/reducers/flightSlice';
 // First airport object from the airports array
   const airports = [
   {
@@ -272,32 +272,18 @@ useEffect(() => {
       ],
     };
 try {
-    // Make an API call to fetch flight results using Axios
-    const response = await axios.post('http://localhost:5000/api/airSearch', updatedFormData, {
-      
-    });
+      // Dispatch the updated form data to Redux using the Thunk action
+      dispatch(fetchFlightResults(updatedFormData));
 
-    // Assuming the API returns JSON data
-    const responseData = response.data;
-
-    
-dispatch(setFlightSearchData(response.data));
-    console.log('API Response:', responseData);
-  } catch (error) {
-    console.error('Error fetching flight results:', error.message);
-  }
-    // Update the form data state with the updatedFormData
-    setFormData(updatedFormData);
-    
-    // Now you can use the updatedFormData for API calls or other purposes
-    console.log('Updated Form Data:', updatedFormData);
-
-    // Use history.push to navigate to the FlightResults page with the form data
-  history.push({
-    pathname: '/flight-results', // Specify the route of the FlightResults page
-     
-  });
+      // Use history.push to navigate to the FlightResults page with the form data
+      history.push({
+        pathname: '/flight-results',
+      });
+    } catch (error) {
+      console.error('Error dispatching thunk action:', error.message);
+    }
   };
+  
   return (
 
 

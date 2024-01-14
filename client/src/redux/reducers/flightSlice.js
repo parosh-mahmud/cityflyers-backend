@@ -38,6 +38,7 @@
 
 
 import { createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
 
 const flightSlice = createSlice({
   name: 'flight',
