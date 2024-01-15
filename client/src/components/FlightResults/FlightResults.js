@@ -33,24 +33,22 @@ const FlightResults = () => {
   const dispatch = useDispatch();
   const flights = useSelector((state) => state.flights.flights);
   const searchID = useSelector(selectSearchID);
-
+const loadingState = useSelector((state) => state.flight.isLoadingFlightData);
 const flightSearchData = useSelector(selectFlightSearchData);
-  // const resultsArray = flightSearchData && flightSearchData.Results ? flightSearchData.Results : [];
-const resultsArray = flightSearchData && flightSearchData[0] && flightSearchData[0].Results
-  ? flightSearchData[0].Results
-  : [];
-  console.log('flightSearchData:', flightSearchData);
-// console.log('resultsArray:', resultsArray);
 
-  // Update searchID in Redux store when FlightResults component mounts
-  useEffect(() => {
-    const airlineCode = flightSearchData[0]?.Results[0]?.Validatingcarrier;
-console.log(airlineCode);
-console.log(flightSearchData)
-    if (searchID) {
-      dispatch(setSearchID(searchID));
-    }
-  }, [dispatch, searchID, flightSearchData]);
+ 
+
+
+
+//   // Update searchID in Redux store when FlightResults component mounts
+//   useEffect(() => {
+//     const airlineCode = flightSearchData[0]?.Results[0]?.Validatingcarrier;
+// console.log(airlineCode);
+// console.log(flightSearchData)
+//     if (searchID) {
+//       dispatch(setSearchID(searchID));
+//     }
+//   }, [dispatch, searchID, flightSearchData]);
 
 
 
@@ -100,7 +98,7 @@ console.log(flightSearchData)
   {flightSearchData.Results &&
     flightSearchData.Results.map((flight, index) => (
       <div key={flight.ResultID}>
-        <FlightCard flightData={flight}  />
+        <FlightCard flightData={flight} isLoading={loadingState}  />
         {index < flightSearchData.Results.length - 1 && <hr style={{ margin: '10px 0' }} />}
       </div>
     ))}

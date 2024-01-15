@@ -12,12 +12,10 @@ import { makeStyles } from '@mui/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useHistory } from 'react-router-dom';
-import { setFlightSearchData } from '../../redux/reducers/flightSlice';
 import dayjs from 'dayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import '..//../index.css'
 import '@fontsource/poppins';
-import axios from 'axios';
 import { fetchFlightResults } from '../../redux/reducers/flightSlice';
 // First airport object from the airports array
   const airports = [

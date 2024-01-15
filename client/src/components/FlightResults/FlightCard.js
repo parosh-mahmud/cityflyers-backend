@@ -18,6 +18,8 @@ import FlightIcon from '@mui/icons-material/Flight';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import CircleIcon from '@mui/icons-material/Circle';
 import Skeleton from "@mui/material/Skeleton";
+
+
 const useStyles = makeStyles((theme) => ({
   container: {
     backgroundColor:'lightgray',
@@ -79,9 +81,8 @@ const useStyles = makeStyles((theme) => ({
  
 }));
 
-export const FlightCard = ({ flightData, onSelect, }) => {
-  const flightDataFromApi = useSelector(selectFlightSearchData);
-  console.log(flightDataFromApi);
+export const FlightCard = ({ flightData, onSelect, isLoading }) => {
+ 
   const dispatch = useDispatch();
   const history = useHistory();
   const segment = flightData.segments[0];
@@ -221,25 +222,34 @@ const calculateDuration = () => {
             {/* box 1.1 */}
             <Box sx={{display:'flex'}}>
               
-              <Box> 
-                {/* logo here */}
-               
-                {airlineLogoUrl && <img src={airlineLogoUrl} alt="Airline Logo" width="100" height="100" />}
-
-              </Box>
+              <Box>
+                      {/* airline logo here */}
+                      {isLoading ? (
+                        <Skeleton variant="circular" width={100} height={100} />
+                      ) : (
+                        airlineLogoUrl && (
+                          <img
+                            src={airlineLogoUrl}
+                            alt="Airline Logo"
+                            width="90"
+                            height="90"
+                          />
+                        )
+                      )}
+                    </Box>
               <Box sx={{}}>
                 {/* airline code + flight number */}
                 <Box sx={{display:"flex"}}>
                 <Typography >
-  <FlightInfoItem  isLoading={!flightData} valueStyle={{ fontWeight: 'bold' }} value={segment.Airline ? segment.Airline.AirlineCode : 'N/A'} />
+  <FlightInfoItem isLoading={isLoading}   valueStyle={{ fontWeight: 'bold' }} value={segment.Airline ? segment.Airline.AirlineCode : 'N/A'} />
 </Typography>
 
 <Typography >
-  <FlightInfoItem valueStyle={{ fontWeight: 'bold' }} value={segment.Airline ? segment.Airline.FlightNumber : 'N/A'} />
+  <FlightInfoItem isLoading={isLoading} valueStyle={{ fontWeight: 'bold' }} value={segment.Airline ? segment.Airline.FlightNumber : 'N/A'} />
 </Typography>
                 </Box>
 
-                <Box><Typography><FlightInfoItem  isLoading={!flightData} label="Aircraft" value={segment.Equipment ? `${segment.Equipment}` : 'N/A'} /></Typography></Box>
+                <Box><Typography><FlightInfoItem isLoading={isLoading} valueStyle={{fontWeight:'bold'}}   label="Aircraft: " value={segment.Equipment ? `${segment.Equipment}` : 'N/A'} /></Typography></Box>
         
               </Box>
               
@@ -247,7 +257,7 @@ const calculateDuration = () => {
 
             <Box>
               <Typography>
-                <FlightInfoItem  isLoading={!flightData}  value={segment.Airline ? segment.Airline.AirlineName : 'N/A'} />
+                <FlightInfoItem isLoading={isLoading}    value={segment.Airline ? segment.Airline.AirlineName : 'N/A'} />
               </Typography>
               
               </Box>
@@ -271,8 +281,8 @@ const calculateDuration = () => {
     alignItems: 'center', // Center content vertically
           }}
         >
-           <Typography> <FlightInfoItem  isLoading={!flightData} valueStyle={{color:'blue',fontWeight:'bold',fontSize:'2rem',}}  value={segment.Origin ? segment.Origin.Airport.CityName : 'N/A'} /></Typography>
-          <Typography> <FlightInfoItem  isLoading={!flightData}  value={segment.Origin ? segment.Origin.Airport.CityCode : 'N/A'} /></Typography>
+           <Typography> <FlightInfoItem isLoading={isLoading}  valueStyle={{color:'blue',fontWeight:'bold',fontSize:'2rem',}}  value={segment.Origin ? segment.Origin.Airport.CityName : 'N/A'} /></Typography>
+          <Typography> <FlightInfoItem isLoading={isLoading}  value={segment.Origin ? segment.Origin.Airport.CityCode : 'N/A'} /></Typography>
         </Box>
       </Box>
 
@@ -299,9 +309,9 @@ const calculateDuration = () => {
             
           }}
         >
-          <Box sx={{marginTop:'25px'}}>
+          <Box >
             {/* time */}
-            <Typography> <FlightInfoItem  isLoading={!flightData} valueStyle={{fontWeight: 'bold',fontSize:'2rem'}}
+            <Typography> <FlightInfoItem isLoading={isLoading}  valueStyle={{fontWeight: 'bold',fontSize:'2rem'}}
              
               value={
                 segment.Destination
@@ -319,14 +329,7 @@ const calculateDuration = () => {
             /></Typography>
           </Box>
 
-          <Box >
-            {/* duration */}
-           
-            <FlightInfoItem  isLoading={!flightData} label={'Duration '}
-                      value={calculateDuration()}
-                      icon={<FaPlaneArrival />}
-                    />
-          </Box>
+         
         </Box>
        <Box
   style={{
@@ -338,19 +341,32 @@ const calculateDuration = () => {
     alignItems: 'center',
   }}
 >
-  <div style={{ transform: 'rotate(90deg)', }}>
-    <FlightIcon />
+  <div >
+    
     
       
    
   </div>
-  <div style={{display:'flex'}} >
-    <MoreHorizIcon />   
-    <MoreHorizIcon />   
+  <div  >
+    <Box sx={{display:'flex',alignItems:'center',justifyContent:'center'}}>
+      <FlightIcon style={{ transform: 'rotate(90deg)', }} />
+      <MoreHorizIcon />   
+    <MoreHorizIcon style={{ marginLeft:'-5px', }} />   
    <CircleIcon/>
+   </Box>
+    
+    <Box >
+            {/* duration */}
+           
+            <FlightInfoItem isLoading={isLoading}  label={'Duration: '}
+                      value={calculateDuration()}
+                      icon={<FaPlaneArrival />}
+                    />
+          </Box>
   </div>
 
 </Box>
+
         <Box
           style={{
            display: 'flex',
@@ -361,7 +377,7 @@ const calculateDuration = () => {
            
           }}
         >
-          <Typography> <FlightInfoItem  isLoading={!flightData} valueStyle={{fontWeight: 'bold',fontSize:'2rem'}}
+          <Typography> <FlightInfoItem isLoading={isLoading}  valueStyle={{fontWeight: 'bold',fontSize:'2rem'}}
              
               value={
                 segment.Destination
@@ -390,8 +406,8 @@ const calculateDuration = () => {
           }}
         >
           <Typography>
-            <FlightInfoItem  isLoading={!flightData} valueStyle={{fontSize:'2rem',color:'blue',fontWeight:'bold'}} value={segment.Destination ? segment.Destination.Airport.CityName : 'N/A'} />
-            <FlightInfoItem  isLoading={!flightData} value={segment.Destination ? segment.Destination.Airport.CityCode : 'N/A'} />
+            <FlightInfoItem isLoading={isLoading} valueStyle={{fontSize:'2rem',color:'blue',fontWeight:'bold'}} value={segment.Destination ? segment.Destination.Airport.CityName : 'N/A'} />
+            <FlightInfoItem value={segment.Destination ? segment.Destination.Airport.CityCode : 'N/A'} />
           </Typography>
         </Box>
       </Box>
@@ -442,16 +458,19 @@ const calculateDuration = () => {
   );
 };
 
-export const FlightInfoItem = ({ label, value, valueStyle , isLoading  }) => (
+export const FlightInfoItem = ({ label, value, valueStyle, isLoading }) => (
   <Box flex="1 1 50%" display="flex" alignItems="center">
     <Typography>{label}</Typography>
     {isLoading ? (
-      <Skeleton width={50} height={20} style={{ marginLeft: 10 }} />
+      
+      <Skeleton width={90} height={30} style={{ marginLeft: 10 }} />
     ) : (
       <Typography style={valueStyle}>{value}</Typography>
     )}
   </Box>
 );
+
+
 
 export default FlightCard;
 
