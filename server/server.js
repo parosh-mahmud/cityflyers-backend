@@ -6,6 +6,8 @@ const userRoutes = require('./routes/userRoutes');
 
 const airportSearchRoutes = require('./routes/airportSearchRoutes');
 const airSearchRoutes = require('./routes/airSearchRoutes')
+const airPriceRoute = require('./routes/airPriceRoute');
+const airPreBook = require('./routes/airPreBook');
 const logoRoutes = require('./routes/airlineLogoRoute')
 const app = express();
 const port = process.env.PORT || 5000;
@@ -27,6 +29,8 @@ app.use(passport.initialize());
 app.use('/api/user', userRoutes);
 app.use('/api/airports', airportSearchRoutes);
 app.use('/api',airSearchRoutes);
+app.use('/api',airPriceRoute);
+app.use('/api',airPreBook);
 app.use('/api',logoRoutes)
 // app.use('/api/logos', logosRoutes);
 app.get('/', (req, res) => {

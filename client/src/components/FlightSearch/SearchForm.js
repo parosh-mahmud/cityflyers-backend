@@ -1,5 +1,5 @@
 import React, { useEffect, useState,useRef } from 'react';
-import { Grid, Paper, Typography, Radio, RadioGroup, FormControlLabel, Button, Stack, Popover, TextField, Box } from '@mui/material';
+import { Grid, Paper, Typography, Radio, RadioGroup, FormControlLabel, Button, Stack, Popover, TextField, Box, CircularProgress, Backdrop } from '@mui/material';
 import { useDispatch } from 'react-redux';
 // import { fetchFlightResults } from '..//../redux/actions/newFlightAction';
 import Divider from '@mui/material/Divider';
@@ -26,10 +26,10 @@ import { fetchFlightResults } from '../../redux/reducers/flightSlice';
     name: 'Hazrat Shahjalal International Airport',
   },
   {
-    code: 'JFK',
-    city: 'New York',
-    country: 'United States',
-    name: 'John F. Kennedy International Airport',
+    code: 'JSR',
+    city: 'Jashore',
+    country: 'Bangladesh',
+    name: 'Jashore Airport',
   },
   
   // You can add more airport data as needed.
@@ -96,6 +96,7 @@ const useStyles = makeStyles((theme) => ({
   };
 
 export const SearchForm =  ({ searchButtonLabel}) => {
+  
  const [selectedOption, setSelectedOption] = useState('oneway');
   const [selectedFromAirport, setSelectedFromAirport] = useState(airports[0]);
    const [selectedToAirport, setSelectedToAirport] = useState(airports[1]);
@@ -119,6 +120,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
 const [selectedClass, setSelectedClass] = useState('Economy');
 const dispatch = useDispatch();
 const history = useHistory();
+const [isFetching, setIsFetching] = useState(false);
 
 const [formData, setFormData] = useState({
     AdultQuantity: 1,
@@ -270,8 +272,9 @@ useEffect(() => {
       ],
     };
 try {
+   setIsFetching(true);
       // Dispatch the updated form data to Redux using the Thunk action
-      dispatch(fetchFlightResults(updatedFormData));
+     await dispatch(fetchFlightResults(updatedFormData));
 
       // Use history.push to navigate to the FlightResults page with the form data
       history.push({
@@ -280,6 +283,10 @@ try {
     } catch (error) {
       console.error('Error dispatching thunk action:', error.message);
     }
+    finally {
+    // Set the backdrop to be invisible, regardless of success or failure
+    setIsFetching(false);
+  }
   };
   
   return (
@@ -287,6 +294,7 @@ try {
 
 
 <>
+
 <Grid container   style={gridContainerStyle}>
       {/* First Inner Grid */}
       <Grid item>
@@ -594,8 +602,15 @@ try {
             
           }}
         >
+          
           {searchButtonLabel || 'Search'}
         </Button>
+        <Backdrop
+      open={isFetching} // Control the visibility based on the state
+      style={{ zIndex: 1, color: '#fff' }}
+    >
+      <CircularProgress color="inherit" />
+    </Backdrop>
 </>
 
 

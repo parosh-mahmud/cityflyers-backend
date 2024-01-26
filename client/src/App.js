@@ -6,12 +6,9 @@ import { Switch, Route } from 'react-router-dom';
 import Homepage from './pages/Homepage'
 import AuthPage from './components/auth/AuthPage';
 import FlightResult from '..//./src/components/FlightResults/FlightResults'
-import TestSearch from '..//src/components/FlightSearch/TestSearch'
-import ApiTestComponent from './components/FlightSearch/ApiTestComponent.js';
-import PassengerDetailsForm from './components/ReservationForm/PassengerDetailsForm'
-import TestComponent from './components/TestComponent';
-
-
+import ResetPassword from './components/auth/ResetPassword'
+import AirPreBookForm from './components/FlightBooking/AirPreBookForm';
+import AirBookForm from './components/FlightBooking/AirBookForm';
 function App() {
   return (
     <div className="App">
@@ -19,10 +16,13 @@ function App() {
         <Route path="/" component={Homepage} exact />
         <Route path="/signin" component={AuthPage}/>
         <Route path="/flight-results" component={FlightResult}/>
-        <Route path="/testSearch" component={TestSearch}/>
-        <Route path="/testapi" component={ApiTestComponent}/>
-        <Route path="/passenger-details" component={PassengerDetailsForm}/>
-        <Route path="/test" component={TestComponent}/>
+        <Route path="/forgot-password" component={ResetPassword}/>
+        <Route path="/airprebookform" component={AirPreBookForm}/>
+        <Route path="/airbook" component={AirBookForm}/>
+        
+        
+        
+        
         
        
         {/* Comment out any other routes */}

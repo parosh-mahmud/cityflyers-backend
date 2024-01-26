@@ -35,12 +35,19 @@ const useAuth = () => {
     }
   };
 
-  // You can define other authentication functions here
+ const signOut = async () => {
+    try {
+      await auth.signOut();
+    } catch (error) {
+      console.error('Sign Out Error:', error);
+    }
+  };
 
   return {
     signInWithGoogle,
-    // Add other authentication functions as needed
+    signOut,
+    // ... (other authentication functions)
   };
 };
 
-export { useAuth };
+export { useAuth,auth };

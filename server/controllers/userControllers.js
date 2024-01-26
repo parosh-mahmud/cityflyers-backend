@@ -4,38 +4,41 @@ const bcrypt = require('bcrypt');
 const { createUser, findUserByEmail } = require('../models/userModels');
 const generateToken = require('../config/generateToken');
 const { v4: uuidv4 } = require('uuid');
-
-
 // Signup Route
 const registration = async (req, res) => {
   try {
-    const { email, password, phoneNumber } = req.body;
+    const { email, password, phoneNumber, firstName, lastName } = req.body;
+
+    // Check if the user with the provided email already exists
+    const existingUser = await findUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ message: 'User with this email already exists' });
+    }
+
+    // Generate a unique user ID using uuidv4
+    const userId = uuidv4();
 
     // Create user data object
     const userData = {
       email: email,
-      password: await bcrypt.hash(password, 10), // Hash the password here
+      password: await bcrypt.hash(password, 10),
       phoneNumber: phoneNumber,
+      firstName: firstName,
+      lastName: lastName,
     };
- // Generate a unique uid for the user using uuid
-    const uid = uuidv4(); // Generate a random UUID
 
-    // Include uid in the userData object
-    const userDataWithUid = { ...userData, uid };
-
-    // Save user data in your database (e.g., Firebase Firestore)
-    await createUser(uid, userDataWithUid);
+    // Create user in Firestore with the generated user ID
+    const userCredential = await createUser(userId, userData);
 
     // Generate JWT token with uid included in the payload
-    const token = generateToken(userDataWithUid);
+    const token = generateToken({ ...userData, uid: userId });
 
-    res.status(200).json({ token });
+    res.status(200).json({ token, userId });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error creating account' });
   }
 };
-
 
 // Login Route
 const login = asyncHandler(async (req, res) => {

@@ -3,28 +3,29 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import {
   FormControl,
-  useToast,
-  VStack,
-  FormLabel,
+  InputLabel,
   Input,
-  InputGroup,
-  InputRightElement,
-  Button,
+  InputAdornment,
   IconButton,
-  HStack,
-} from '@chakra-ui/react';
-import { ArrowBackIcon } from '@chakra-ui/icons';
+  Button,
+  Link,
+  Typography,
+  TextField,
+} from '@mui/material';
+import { KeyboardArrowLeft } from '@mui/icons-material';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import CityLogo from '..//../assets/logos/CityLogo.png';
+import { getAuth, createUserWithEmailAndPassword, sendSignInLinkToEmail } from 'firebase/auth';
 
 const SignUp = ({ handleToggle }) => {
   const [show, setShow] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const toast = useToast();
   const history = useHistory();
 
   const handleClick = () => setShow(!show);
@@ -32,65 +33,72 @@ const SignUp = ({ handleToggle }) => {
   const submitHandler = async () => {
     setLoading(true);
 
-    if (!email || !password || !phoneNumber) {
-      toast({
-        title: 'Please fill in all fields.',
-        status: 'warning',
-        duration: 5000,
-        isClosable: true,
-        position: 'bottom',
-      });
+    if (!firstName || !lastName || !email || !phoneNumber || !password) {
+      console.error('Please fill in all fields');
       setLoading(false);
       return;
     }
 
     try {
-      const userData = { email, password, phoneNumber };
-      console.log(userData);
-      const response = await axios.post('http://localhost:5000/api/user/registration', userData); // Replace with the correct API endpoint
+      const auth = getAuth();
 
-      toast({
-        title: 'Account created successfully',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-        position: 'bottom',
+      // Step 1: Create user with email and password
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Step 2: Save additional user data to Firestore
+      await axios.post('/api/user/registration', {
+        email: email,
+        password: password,
+        phoneNumber: phoneNumber,
+        firstName: firstName,
+        lastName: lastName,
       });
 
-      localStorage.setItem('userInfo', JSON.stringify(response.data));
-      setEmail('');
-      setPassword('');
-      setPhoneNumber('');
+      // Local storage might not be the most secure way to store user info, consider alternatives.
+      localStorage.setItem('userInfo', JSON.stringify(user));
+
       setLoading(false);
       history.push('/signin');
     } catch (error) {
-      console.error(error);
-      toast({
-        title: 'Error creating account',
-        description: error.message,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'bottom',
-      });
+      console.error('Error creating account', error);
       setLoading(false);
     }
   };
 
   return (
-    <VStack width="550px" ml="auto" mr="auto" spacing="5px" color="black">
-      <HStack alignSelf="flex-start" spacing="2">
-        <IconButton icon={<ArrowBackIcon />} aria-label="Back to Login" onClick={handleToggle} />
-        <img src={CityLogo} alt="Company Logo" height={8} />
-      </HStack>
+    <div style={{ width: '550px', marginLeft: 'auto', marginRight: 'auto', color: 'black' }}>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
+        <IconButton onClick={handleToggle}>
+          <KeyboardArrowLeft />
+        </IconButton>
+        <img src={CityLogo} alt="Company Logo" height={32} />
+      </div>
+    <TextField
+    fullWidth
+          required
+          id="outlined-required"
+          label="First Name"
+          
+        />
 
-      <FormControl id="email" isRequired>
-        <FormLabel>Email</FormLabel>
+      <FormControl fullWidth>
+        <InputLabel>Last Name</InputLabel>
+        <Input placeholder="Enter your Last Name" onChange={(e) => setLastName(e.target.value)} />
+      </FormControl>
+
+      <FormControl fullWidth>
+        <InputLabel>Email</InputLabel>
         <Input placeholder="Enter your Email" onChange={(e) => setEmail(e.target.value)} />
       </FormControl>
 
-      <FormControl id="phone" isRequired>
-        <FormLabel>Phone Number</FormLabel>
+      <FormControl fullWidth>
+        <InputLabel>Phone Number</InputLabel>
+        <Input placeholder="Enter your Phone Number" onChange={(e) => setPhoneNumber(e.target.value)} />
+      </FormControl>
+
+      {/* <FormControl fullWidth>
+        <InputLabel>Phone Number</InputLabel>
         <PhoneInput
           defaultCountry="BD"
           useNationalFormatForDefaultCountryValue={true}
@@ -98,34 +106,31 @@ const SignUp = ({ handleToggle }) => {
           value={phoneNumber}
           onChange={setPhoneNumber}
         />
+      </FormControl> */}
+
+      <FormControl fullWidth>
+        <InputLabel>Password</InputLabel>
+        <Input
+          type={show ? 'text' : 'password'}
+          placeholder="Enter your Password"
+          onChange={(e) => setPassword(e.target.value)}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton onClick={handleClick}>
+                {show ? 'Hide' : 'Show'}
+              </IconButton>
+            </InputAdornment>
+          }
+        />
       </FormControl>
 
-      <FormControl id="password" isRequired>
-        <FormLabel>Password</FormLabel>
-        <InputGroup>
-          <Input
-            type={show ? 'text' : 'password'}
-            placeholder="Enter your Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? 'Hide' : 'Show'}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-
-      <Button
-        colorScheme="blue"
-        width="100%"
-        style={{ marginTop: 15 }}
-        onClick={submitHandler}
-        isLoading={loading}
-      >
+      <Button variant="contained" color="primary" fullWidth style={{ marginTop: '15px' }} onClick={submitHandler} disabled={loading}>
         Signup
       </Button>
-    </VStack>
+      <Typography variant="body2" color="textSecondary" style={{ marginTop: '10px' }}>
+        <Link href="/forgot-password">Forgot password?</Link>
+      </Typography>
+    </div>
   );
 };
 

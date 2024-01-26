@@ -15,7 +15,12 @@ import { Link } from 'react-router-dom';
 // import ProductSansBoldItalic from '..//../assets/fonts/ProductSansBoldItalic'
 import CityLogo from "../../assets/logos/CityLogo.png";
 import { Grid } from '@mui/material';
-
+import { useAuthCont } from '../auth/AuthContext';
+import { useAuth,auth } from '../../firebaseconfig';
+import Avatar from '@mui/material/Avatar';
+import Popover from '@mui/material/Popover';
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 const pages = [
   { label: 'Home', link: '/' },
@@ -33,6 +38,10 @@ const pages = [
 const DashBoardHeader = () => {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
  const [scrolling, setScrolling] = useState(false);
+const { currentUser } = useAuthCont(); // Add this line to get the current user and sign out function
+const signOut = useAuth();
+console.log(currentUser)
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleScroll = () => {
     if (window.scrollY > 0) {
@@ -55,6 +64,24 @@ const DashBoardHeader = () => {
   const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
+
+  const handleAvatarClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleAvatarClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await auth.signOut(); // Use the signOut function from the useAuth hook
+    } catch (error) {
+      console.error('Sign Out Error:', error);
+    }
+  };
+
+  const open = Boolean(anchorEl);
 
   return (
      <AppBar
@@ -123,9 +150,47 @@ const DashBoardHeader = () => {
               </Grid>
             ))}
           </Grid>
-                  
-          <Button variant="contained" component={Link} to="/signin" sx={{ width: 120, color: 'black', display: {  md: 'block' } }}>Sign In</Button>
-                 
+         {/* Conditionally render the user avatar with dropdown based on the currentUser */}
+      {currentUser ? (
+        <>
+        <Box onClick={handleAvatarClick} sx={{ cursor: 'pointer', width: 32, height: 32,display:'flex',justifyContent:'center',alignItems:'center' }}>
+        <Avatar >
+            {/* You can display the user's initials or profile picture */}
+            {currentUser.displayName ? currentUser.displayName[0].toUpperCase() : ''}
+          </Avatar>
+          <KeyboardArrowDownIcon/>
+        </Box>
+          
+          <Popover
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleAvatarClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <Box  >
+              <Button sx={{  textTransform:'capitalize'  }} onClick={handleSignOut} fullWidth>
+                Profile
+              </Button>
+              <Button sx={{  textTransform:'capitalize'  }} onClick={handleSignOut} fullWidth>
+                Sign Out
+              </Button>
+              
+            </Box>
+          </Popover>
+        </>
+      ) : (
+        // If the user is not logged in, show the Sign In button
+        <Button variant="contained" component={Link} to="/signin" sx={{ width: 120, color: 'black', display: { md: 'block' } }}>
+          Sign In
+        </Button>
+      )}
           <IconButton
             size="large"
             aria-label="menu"

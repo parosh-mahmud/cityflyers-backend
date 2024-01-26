@@ -11,6 +11,9 @@ import { selectFlightSearchData } from '../../redux/reducers/flightSlice';
 import FilterComponent from '../filterComponent/FilterComponent';
 import SearchForm from '../FlightSearch/SearchForm';
 import RecommendFilter from '../filterComponent/RecommendFilter';
+
+
+
 const recommendedBoxStyle = {
   width: '100%',
   height: '48px',
@@ -31,24 +34,20 @@ const boxStyle={
 
 const FlightResults = () => {
   const dispatch = useDispatch();
-  const flights = useSelector((state) => state.flights.flights);
-  const searchID = useSelector(selectSearchID);
+  
+  
 const loadingState = useSelector((state) => state.flight.isLoadingFlightData);
 const flightSearchData = useSelector(selectFlightSearchData);
+console.log(flightSearchData)
+ const [showSortedFlights, setShowSortedFlights] = useState(false);
+  const [sortedFlights, setSortedFlights] = useState([]);
+
+  const handleSortFlights = (sortedFlights) => {
+    setSortedFlights([...sortedFlights]);
+    setShowSortedFlights(true);
+  };
 
  
-
-
-
-//   // Update searchID in Redux store when FlightResults component mounts
-//   useEffect(() => {
-//     const airlineCode = flightSearchData[0]?.Results[0]?.Validatingcarrier;
-// console.log(airlineCode);
-// console.log(flightSearchData)
-//     if (searchID) {
-//       dispatch(setSearchID(searchID));
-//     }
-//   }, [dispatch, searchID, flightSearchData]);
 
 
 
@@ -62,7 +61,7 @@ const flightSearchData = useSelector(selectFlightSearchData);
   <Grid item xs={12}>
     <Paper style={{ height: 'auto', padding: 16 }}>
       {/* First Row with Background Color */}
-      <Box sx={{ marginBottom: 2, backgroundColor: 'lightblue', padding: 2,height:'auto' }}>
+      <Box sx={{ marginBottom: 2, backgroundColor: 'lightgray', padding: 2,height:'auto' }}>
         
         {/* Content for the first row */}
        <SearchForm searchButtonLabel="Modify Search" />
@@ -91,18 +90,29 @@ const flightSearchData = useSelector(selectFlightSearchData);
               <FilterComponent/>
               </Box>
               <Box sx={{width:'100%',minHeight:'80px',backgroundColor:'lightgray',display:'flex',marginTop:'10px',marginBottom:'5px',border:'1 px solid gray'}}>
-             <RecommendFilter />
+             <RecommendFilter flightDataArray={flightSearchData.Results} onSortFlights={handleSortFlights} />
                  
               </Box>
-             <Box style={{ marginTop: '10px' }}>
-  {flightSearchData.Results &&
-    flightSearchData.Results.map((flight, index) => (
-      <div key={flight.ResultID}>
-        <FlightCard flightData={flight} isLoading={loadingState}  />
-        {index < flightSearchData.Results.length - 1 && <hr style={{ margin: '10px 0' }} />}
-      </div>
-    ))}
+            <Box style={{ marginTop: '10px' }}>
+  {showSortedFlights ? (
+                  // Display sorted flights when showSortedFlights is true
+                  sortedFlights.map((flight, index) => (
+                    <div key={flight.ResultID}>
+                      <FlightCard flightData={flight} availability={flight.Availabilty} isLoading={loadingState} />
+                      {index < sortedFlights.length - 1 && <hr style={{ margin: '10px 0' }} />}
+                    </div>
+                  ))
+                ) : (
+                  // Display unsorted flights when showSortedFlights is false
+                  flightSearchData?.Results && flightSearchData.Results.map((flight, index) => (
+                    <div key={flight.ResultID}>
+                      <FlightCard flightData={flight} availability={flight.Availabilty} isLoading={loadingState} />
+                      {index < flightSearchData.Results.length - 1 && <hr style={{ margin: '10px 0' }} />}
+                    </div>
+                  ))
+                )}
 </Box>
+
             </Paper>
             
           </Grid>

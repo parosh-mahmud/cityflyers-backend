@@ -5,8 +5,8 @@ body {
   font-family: 'Poppins',sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #c4c4c4;
-  background-image: url('./assets/images/background.jpg');
+  background-color: #EBEBEB;
+  
   background-size: auto 90%;
     /* Set the desired height (300 pixels in this example) */
      background-repeat: no-repeat;

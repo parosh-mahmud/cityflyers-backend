@@ -19,16 +19,26 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import thunk from 'redux-thunk';
 import flightReducer from './reducers/flightSlice';
-
+import airPriceReducer from './slices/airPriceSlice';
+import searchIDResultIDReducer from './slices/searchIDResultIDSlice'; // Adjust the path accordingly
+import airPreBookReducer from './slices/airPreBookSlice'
+import passengerDetailsReducer from './slices/passengerDetailsSlice'
 const middleware = [...getDefaultMiddleware(), thunk];
 
 const store = configureStore({
   reducer: {
     flight: flightReducer,
     flights:flightReducer,
+    airPrice: airPriceReducer,
+    searchIDResultID: searchIDResultIDReducer,
+    airPreBook: airPreBookReducer,
+    passengerDetails:passengerDetailsReducer,
     // Add other reducers if you have them
   },
   middleware,
 });
 
 export default store;
+
+
+

@@ -7,6 +7,7 @@ import store from './redux/store';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { AuthProvider } from './components/auth/AuthContext';
 
 // Create a theme object
 const theme = createTheme();
@@ -19,7 +20,9 @@ ReactDOM.render(
       <ThemeProvider theme={theme}>
         <Router>
           <Provider store={store}>
+            <AuthProvider>
             <App />
+            </AuthProvider>
           </Provider>
         </Router>
       </ThemeProvider>

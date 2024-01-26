@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 
 const recommendedBoxStyle = {
@@ -16,14 +16,43 @@ const boxStyle = {
   height: '100%',
   backgroundColor: 'white',
   border:'1px solid gray',
-  borderRadius: '5px'
+  borderRadius: '5px',
+  cursor: 'pointer',
 };
 
 const headingTextStyle = {
   fontWeight: 'bold',
 }
 
-const RecommendFilter = () => {
+const RecommendFilter = ({flightDataArray,onSortFlights}) => {
+
+   const [sortedFlights, setSortedFlights] = useState([...flightDataArray]);
+
+useEffect(() => {
+    // Whenever flightDataArray changes, update the sorted flights
+    setSortedFlights([...flightDataArray]);
+  }, [flightDataArray]);
+
+  const handleSortByDuration = () => {
+  const sortedByDuration = [...flightDataArray].sort((a, b) => {
+    // Assuming the duration is in minutes, adjust the comparison as needed
+    const durationA = parseInt(a.segments[0].JourneyDuration);
+    const durationB = parseInt(b.segments[0].JourneyDuration);
+    return durationA - durationB;
+  });
+
+  onSortFlights(sortedByDuration);
+};
+
+ const handleSortByBaseFare = () => {
+    const sortedByBaseFare = [...flightDataArray].sort((a, b) => {
+      const baseFareA = a.Fares[0].BaseFare;
+      const baseFareB = b.Fares[0].BaseFare;
+      return baseFareA - baseFareB;
+    });
+    onSortFlights(sortedByBaseFare);
+  };
+
   return (
     <Box sx={recommendedBoxStyle}>
       <Box sx={boxStyle}>
@@ -32,9 +61,10 @@ const RecommendFilter = () => {
           <Typography>5H 30</Typography>
           <Typography>Direct</Typography>
           <Typography>BDT 61984</Typography>
+          
         </Box>
       </Box>
-      <Box sx={boxStyle}>
+      <Box onClick={handleSortByBaseFare} sx={boxStyle}>
         <Box sx={headingTextStyle} >Cheapest</Box>
         <Box sx={{display:'flex',justifyContent:'space-between',marginTop:'10px'}}>
           <Typography>5H 30</Typography>
@@ -42,7 +72,7 @@ const RecommendFilter = () => {
           <Typography>BDT 61984</Typography>
         </Box>
       </Box>
-      <Box sx={boxStyle}>
+      <Box onClick={handleSortByDuration} sx={boxStyle}>
         <Box sx={headingTextStyle}>Fastest</Box>
         <Box sx={{display:'flex',justifyContent:'space-between',marginTop:'10px'}}>
           <Typography>5H 30</Typography>
