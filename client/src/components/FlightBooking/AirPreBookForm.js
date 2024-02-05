@@ -10,6 +10,7 @@ import AirPriceShow from './AirPriceShow';
 const AirPreBookForm = () => {
   const airPriceData = useSelector(selectAirPriceData);
 const segment = airPriceData?.Results[0]?.segments[0];
+const segmentReturn = airPriceData?.Results[0]?.segments[1];
 console.log(airPriceData);
   // Use selectedFlightData to display details on the new page
 
@@ -20,6 +21,7 @@ console.log(airPriceData);
         <div style={{ flex: '1', backgroundColor: 'blue' }}>
           {/* Content for the first column */}
           <FlightCard flightData={{ segments: [segment] }} showActions={false}/>
+          <FlightCard flightData={{ segments: [segmentReturn] }} showActions={false}/>
           
         </div>
         <div style={{ flex: '1',  }}>

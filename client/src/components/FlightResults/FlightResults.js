@@ -34,11 +34,16 @@ const boxStyle={
 
 const FlightResults = () => {
   const dispatch = useDispatch();
-  
+ 
+
   
 const loadingState = useSelector((state) => state.flight.isLoadingFlightData);
 const flightSearchData = useSelector(selectFlightSearchData);
 console.log(flightSearchData)
+const flightResults = flightSearchData.Results || [];
+ const outboundSegments = flightSearchData.Results;
+const inboundSegments = flightSearchData;
+console.log(outboundSegments)
  const [showSortedFlights, setShowSortedFlights] = useState(false);
   const [sortedFlights, setSortedFlights] = useState([]);
 
@@ -94,7 +99,8 @@ console.log(flightSearchData)
                  
               </Box>
             <Box style={{ marginTop: '10px' }}>
-  {showSortedFlights ? (
+   {/* Iterate over flight results */}
+               {showSortedFlights ? (
                   // Display sorted flights when showSortedFlights is true
                   sortedFlights.map((flight, index) => (
                     <div key={flight.ResultID}>

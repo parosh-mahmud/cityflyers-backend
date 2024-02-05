@@ -1,11 +1,14 @@
 import React, { useEffect, useState,useRef } from 'react';
-import { Grid, Paper, Typography, Radio, RadioGroup, FormControlLabel, Button, Stack, Popover, TextField, Box, CircularProgress, Backdrop } from '@mui/material';
+import { Grid, Paper, Typography, Radio, RadioGroup, FormControlLabel, Button, Stack, Popover, TextField, Box, CircularProgress, Backdrop, IconButton, Icon } from '@mui/material';
 import { useDispatch } from 'react-redux';
 // import { fetchFlightResults } from '..//../redux/actions/newFlightAction';
 import Divider from '@mui/material/Divider';
 import SwapHorizontalCircleIcon from '@mui/icons-material/SwapHorizontalCircle';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import FlightLandIcon from '@mui/icons-material/FlightLand';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import SyncIcon from '@mui/icons-material/Sync';
+import MultipleStopIcon from '@mui/icons-material/MultipleStop';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import fetchAirports from '../../services/api';
 import { makeStyles } from '@mui/styles';
@@ -17,6 +20,10 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import '..//../index.css'
 import '@fontsource/poppins';
 import { fetchFlightResults } from '../../redux/reducers/flightSlice';
+import './style.css'
+
+
+
 // First airport object from the airports array
   const airports = [
   {
@@ -38,8 +45,13 @@ import { fetchFlightResults } from '../../redux/reducers/flightSlice';
 
 
 const useStyles = makeStyles((theme) => ({
-
-  
+backdrop:{
+  zIndex: theme.zIndex.drawer + 1,
+  color: 'red',
+  backgroundColor:'rgba(0,0,0,0.4)',
+  backdropFilter:'blur(3px)',
+}
+  ,
   popover: {
     backgroundColor: '#fff',
     padding: theme.spacing(2),
@@ -71,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
 
   const gridContainerStyle = {
     // borderRadius: '10px', // Border radius of 10px
-    backgroundColor: 'white', // Background
+    backgroundColor: 'rgba(255,255,255,0.5)', // Background
     overflow: 'hidden', // Optional: To ensure children elements don't overflow outside the border radius
     // padding: '50px',
     // marginTop: '5px',
@@ -80,6 +92,8 @@ const useStyles = makeStyles((theme) => ({
     
     borderBottomLeftRadius:'5px',
     borderBottomRightRadius:'5px',
+   
+   
     
 
     
@@ -184,6 +198,28 @@ const handleDepartureDateChange = (date) => {
   setDanchorEl(null); // Close the Popover after selecting a date
 };
 
+function CustomIconButton({ value, selectedValue, onChange, Icon, label }) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginRight: '16px', // Adjust spacing as needed
+        }}
+      >
+        <IconButton
+          color={selectedValue === value ? 'primary' : 'default'}
+          onClick={() => onChange(value)}
+          aria-label={label}
+        >
+          <Icon />
+        </IconButton>
+        <Typography variant="caption">{label}</Typography>
+      </Box>
+    );
+  }
+
 
   const handleDPopoverClick = (event) => {
   setDanchorEl(event.currentTarget);
@@ -228,8 +264,8 @@ const handleToAirportSelect = (airport) => {
 
   const open = Boolean(anchorEl);
 
-  const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value);
+  const handleOptionChange = (newValue) => {
+    setSelectedOption(newValue);
   };
 
   const handleFetchAirports = async () => {
@@ -256,38 +292,47 @@ useEffect(() => {
 
  const handleFormData = async () => {
     // Create a new object to hold the updated form data
-    const updatedFormData = {
-      ...formData, // Spread the existing form data to keep other properties unchanged
-      AdultQuantity: adults, // Update the adult quantity with the current state value
-      ChildQuantity: children, // Update the children quantity with the current state value
-      InfantQuantity: infants, // Update the infants quantity with the current state value
-      JourneyType: selectedOption === 'oneway' ? '1' : '2', // Update the journey type based on selectedOption state
+    let updatedFormData = {
+      AdultQuantity: adults, // Assuming you have a state for adults
+      ChildQuantity: children, // Assuming you have a state for children
+      InfantQuantity: infants, // Assuming you have a state for infants
+      EndUserIp: "103.124.251.147", // This can be dynamically obtained or kept static as in your example
+      JourneyType: selectedOption === 'oneway' ? '1' : '2', // '1' for one-way, '2' for return
       Segments: [
         {
           Origin: selectedFromAirport.code,
           Destination: selectedToAirport.code,
-          CabinClass: selectedClass === 'Economy' ? '1' : '2', // Assuming '1' represents Economy and '2' represents Business class
-          DepartureDateTime: selectedDate.format('YYYY-MM-DD'), // Format the date according to the API's expected format
+          CabinClass: selectedClass === 'Economy' ? '1' : '2', // Assuming '1' for Economy and '2' for Business class
+          DepartureDateTime: selectedDate.format('YYYY-MM-DD'),
         },
       ],
     };
-try {
-   setIsFetching(true);
-      // Dispatch the updated form data to Redux using the Thunk action
-     await dispatch(fetchFlightResults(updatedFormData));
+
+    // If the journey type is 'return', add the return segment to the formData
+    if (selectedOption === 'return') {
+      updatedFormData.Segments.push({
+        Origin: selectedToAirport.code,
+        Destination: selectedFromAirport.code,
+        CabinClass: selectedClass === 'Economy' ? '1' : '2', // Same assumption as above
+        DepartureDateTime: returnDate.format('YYYY-MM-DD'),
+      });
+    }
+
+    try {
+      setIsFetching(true);
+      // Dispatch the updated form data to Redux using the thunk action
+      await dispatch(fetchFlightResults(updatedFormData));
 
       // Use history.push to navigate to the FlightResults page with the form data
-      history.push({
-        pathname: '/flight-results',
-      });
+      history.push('/flight-results');
     } catch (error) {
       console.error('Error dispatching thunk action:', error.message);
+    } finally {
+      // Set the backdrop to be invisible, regardless of success or failure
+      setIsFetching(false);
     }
-    finally {
-    // Set the backdrop to be invisible, regardless of success or failure
-    setIsFetching(false);
-  }
-  };
+};
+
   
   return (
 
@@ -295,22 +340,41 @@ try {
 
 <>
 
-<Grid container   style={gridContainerStyle}>
+<Grid container    style={gridContainerStyle}>
       {/* First Inner Grid */}
       <Grid item>
        
-            <RadioGroup
-            sx={{paddingLeft:'20px'}}
-            row
-            aria-label="journey-type"
-            name="journey-type"
-            value={selectedOption}
-            onChange={handleOptionChange}
-          >
-            <FormControlLabel value="oneway"  control={<Radio color=  'warning' />} label="One-way" />
-            <FormControlLabel value="return" control={<Radio />} label="Return" />
-            <FormControlLabel value="multicity" control={<Radio />} label="Multi-city" />
-          </RadioGroup>
+           <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        paddingLeft: '20px'
+      }}
+      aria-label="journey-type"
+      name="journey-type"
+    >
+      <CustomIconButton
+        value="oneway"
+        selectedValue={selectedOption}
+        onChange={() => handleOptionChange('oneway')}
+        Icon={KeyboardBackspaceIcon}
+        label="One-way"
+      />
+      <CustomIconButton
+        value="return"
+        selectedValue={selectedOption}
+        onChange={() => handleOptionChange('return')}
+        Icon={SyncIcon}
+        label="Return"
+      />
+      <CustomIconButton
+        value="multicity"
+        selectedValue={selectedOption}
+        onChange={() => handleOptionChange('multicity')}
+        Icon={MultipleStopIcon}
+        label="Multi-city"
+      />
+    </Box>
         
       </Grid>
 
@@ -319,7 +383,7 @@ try {
         {/* item 1 */}
         <Grid item sm={12} xs={12} lg={6} md={6} direction='row'>
           <Box  style={paperStyle} >
-             <Box onClick={(event) => handlePopoverClick(event, 'from')}  style={{ border:'1px solid #0067FF',borderTopLeftRadius:'5px',borderBottomLeftRadius:'5px', width: '50%',height: '90px', backgroundColor: 'white',cursor: 'pointer',marginRight:'-10px',borderRight:'none'}}>
+             <Box onClick={(event) => handlePopoverClick(event, 'from')}  style={{ border:'1px solid #0067FF',borderTopLeftRadius:'5px',borderBottomLeftRadius:'5px', width: '50%',height: '90px', cursor: 'pointer',marginRight:'-10px',borderRight:'none',}}>
         <Stack direction="column"
   justifyContent="flex-start"
   alignItems="flex-start"
@@ -376,7 +440,7 @@ try {
     </Popover>
 
 
-    <Box onClick={(event) => handlePopoverClick(event, 'to')}  style={{border:'1px solid #0067FF',borderBottomRightRadius:'5px',borderTopRightRadius:'5px', width: '50%',height: '90px', backgroundColor: 'white',cursor: 'pointer', marginLeft:'-10px',}}>
+    <Box onClick={(event) => handlePopoverClick(event, 'to')}  style={{border:'1px solid #0067FF',borderBottomRightRadius:'5px',borderTopRightRadius:'5px', width: '50%',height: '90px', cursor: 'pointer', marginLeft:'-10px',}}>
                 
                  <Stack direction="column"
   justifyContent="flex-start"
@@ -431,7 +495,7 @@ try {
         
         <Grid item sm={12} xs={12} lg={4} md={4}>
           <Box  style={paperStyle}>
-             <Box onClick={handleDPopoverClick} style={{ borderRight:'none', border:'1px solid #0067FF',borderBottomLeftRadius:'5px',borderTopLeftRadius:'5px', width: '50%', height: '90px', backgroundColor: 'white', float: 'left',cursor:'pointer', boxSizing:'border-box' }}>
+             <Box onClick={handleDPopoverClick} style={{ borderRight:'none', border:'1px solid #0067FF',borderBottomLeftRadius:'5px',borderTopLeftRadius:'5px', width: '50%', height: '90px',  float: 'left',cursor:'pointer', boxSizing:'border-box' }}>
     <Box style={{display:'flex',}}>
        <CalendarMonthIcon style={{color:'#0067FF'}}/>
       <Typography>Travel Date</Typography>
@@ -472,7 +536,7 @@ try {
 
          {/* return date */}
 
-  <Box onClick={(event) => handleRPopoverClick(event)} style={{ width: '50%', height: '90px', backgroundColor: 'white', float: 'left', boxSizing: 'border-box', border:'1px solid #0067FF',borderTopRightRadius:'5px' ,borderBottomRightRadius:'5px', borderLeft:'none', cursor:'pointer' }}>
+  <Box onClick={(event) => handleRPopoverClick(event)} style={{ width: '50%', height: '90px',  float: 'left', boxSizing: 'border-box', border:'1px solid #0067FF',borderTopRightRadius:'5px' ,borderBottomRightRadius:'5px', borderLeft:'none', cursor:'pointer' }}>
   <Box style={{ display: 'flex',  }}>
     <CalendarMonthIcon style={{color:'#0067FF'}} />
    <Typography >Return</Typography>
@@ -513,7 +577,7 @@ try {
              {/* Travller class */}
            <Box
   onClick={openModal} 
-  style={{ width: '100%', height:'90px', backgroundColor: 'white', cursor: 'pointer',border:'1px solid #0067FF',borderRadius:'5px',boxSizing: 'border-box',}}
+  style={{ width: '100%', height:'90px',  cursor: 'pointer',border:'1px solid #0067FF',borderRadius:'5px',boxSizing: 'border-box',}}
 >
   
   <Typography>Traveller & Class</Typography>

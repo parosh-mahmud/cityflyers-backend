@@ -5,7 +5,11 @@ body {
   font-family: 'Poppins',sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #EBEBEB;
+  /* background: linear-gradient(to bottom, #35ABF6, #103c50); */
+  background-image: linear-gradient(to bottom, #35ABF6, #63bee9);
+    background-size: cover;
+    background-position: center;
+    backdrop-filter: blur(8px);
   
   background-size: auto 90%;
     /* Set the desired height (300 pixels in this example) */

@@ -92,8 +92,9 @@ export const FlightCard = ({ flightData, onSelect, availability, isLoading, show
   const dispatch = useDispatch();
   const history = useHistory();
   const segment = flightData.segments[0];
-  
-
+  const segmentReturn = flightData.segments[1];
+  console.log(segment.TripIndicator)
+console.log(segment)
 
 
  
@@ -172,8 +173,8 @@ const calculateDuration = () => {
 
 const SearchIDs = flightSearchData.SearchId;
  const Result_ID = flightData.ResultID;
-console.log(Result_ID)
-console.log(SearchIDs)
+// console.log(Result_ID)
+// console.log(SearchIDs)
 
 
   const handleSelect = async () => {
@@ -449,6 +450,20 @@ console.log(SearchIDs)
         </Box>
       </Box>
     </div>
+
+{/* flight card with showActions false */}
+            {segmentReturn && segmentReturn.TripIndicator === "InBound" && (
+    <div>
+        <FlightCard
+            flightData={{ ...flightData, segments: [segmentReturn] }} // Pass only the inbound segment
+            availability={availability}
+            isLoading={isLoading}
+            showActions={false} // Hide actions for this specific FlightCard
+            showDetails={false} // Ensuring details are not expandable for this card
+        />
+    </div>
+)}
+
     {showActions && (
 <Button
   variant='contained'

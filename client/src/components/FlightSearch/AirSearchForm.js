@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
 import Oneway from './JourneyType';
 import SearchForm from './SearchForm';
-
+import '../FlightSearch/style.css'
 const SearchFlight = () => {
   const [activeTab, setActiveTab] = useState(0);
 
@@ -11,7 +11,7 @@ const SearchFlight = () => {
   };
 
   return (
-    <div style={{ width: '98%',  margin: '0 auto', marginTop: '40px',}}>
+    <div style={{ width: '98%',  margin: '0 auto', marginTop: '40px', }}>
       <Tabs
         value={activeTab}
         onChange={handleTabChange}
@@ -19,14 +19,14 @@ const SearchFlight = () => {
   scrollButtons
   allowScrollButtonsMobile
         indicatorColor="primary"
-        textColor="primary"
+        textColor="white"
          sx={{
           width: 'auto',  
           //previous was 600px
-         
+         backgroundColor:'rgba(255,255,255,0.5)',
           borderTopLeftRadius:'5px',
           borderTopRightRadius:'5px',
-          backgroundColor: 'white',
+          border: '1px solid	white',	
           margin:'auto',
         }}
         
@@ -43,7 +43,7 @@ const SearchFlight = () => {
         {activeTab === 0 && (
           <Box  >
            
-            <SearchForm />
+            <SearchForm  />
           </Box>
         )}
       </div>

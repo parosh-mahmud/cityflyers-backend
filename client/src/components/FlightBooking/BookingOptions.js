@@ -25,26 +25,39 @@ const BookingOptions = ({ handleDownloadPDF }) => {
   return (
     <>
       <Box
-        container
+        
         sx={{
           borderRadius: '5px',
           justifyContent: 'center',
+          alignItems: 'center',
           display: 'flex',
           flexDirection: 'column',
-          maxWidth: '100%',
+          maxWidth: '90%',
         }}
       >
         <Box
           sx={{
             height: '50px',
+            width:'auto',
             backgroundColor: '#2B2B2B',
             display: 'flex',
+            flexDirection: 'column',
+            
             justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: '10px',
           }}
         >
-          <Typography sx={{ fontWeight: 'bold', fontSize: '20px', color: 'white' }}>History</Typography>
+          <Box sx={{height:'20px',width:'auto'}}>
+                        <Typography sx={{ fontWeight: 'bold', fontSize: '20px', color: 'white', }}>History</Typography>
+
+          </Box>
+
+          <Box sx={{height:'80px',width:'auto',backgroundColor:'green'}}>
+            <Typography sx={{ fontWeight: 'bold', fontSize: '20px', color: 'white', }}>History</Typography>
+            <Typography sx={{ fontWeight: 'bold', fontSize: '20px', color: 'white', }}>History</Typography>
+            <Typography sx={{ fontWeight: 'bold', fontSize: '20px', color: 'white', }}>History</Typography>
+          </Box>
           
         </Box>
         <Box style={boxStyle}>
