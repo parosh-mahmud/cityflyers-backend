@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../firebaseconfig';
 import SignUp from './SignUp';
 import LayoutPage from '../../pages/LayoutPage';
+
 import {
   FormControl,
   Button,

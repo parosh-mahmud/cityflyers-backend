@@ -61,17 +61,7 @@ app.get('/api/airline/:code', async (req, res) => {
   }
 });
 
-// let getLogo = async (airline) => {
-//     try{
-//         let logo = await scrapper(airline);
-//         console.log(`data uri => ${logo}`);
-//     }
-//     catch(error) {
-//         console.log(error);
-//     }
-// }
 
-// getLogo(airline);
 
 // Endpoint for uploading logos
 app.post('/uploadLogos', async (req, res) => {

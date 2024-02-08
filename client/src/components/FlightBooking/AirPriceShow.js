@@ -42,9 +42,9 @@ console.log(airPriceData)
   }
 
   return (
-    <Box container sx={{padding:'10px',borderRadius:'5px'}} >
+    <Box container sx={{padding:'10px',borderRadius:'5px',border:'1px solid white'}} >
 
-<Box sx={{height:'50px',backgroundColor:'#5e9179',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+<Box sx={{height:'50px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
 <Typography sx={{fontWeight:'bold',fontSize:'20px'}}>Fare Summary</Typography>
 
 <KeyboardArrowDown/>

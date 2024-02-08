@@ -64,22 +64,22 @@ console.log(outboundSegments)
  <Grid container spacing={2} style={{width:'98%',margin:'auto'}}>
  
   <Grid item xs={12}>
-    <Paper style={{ height: 'auto', padding: 16 }}>
+    <Box style={{ height: 'auto', padding: "10px" }}>
       {/* First Row with Background Color */}
-      <Box sx={{ marginBottom: 2, backgroundColor: 'lightgray', padding: 2,height:'auto' }}>
+      <Box sx={{  padding: 2,height:'auto' }}>
         
         {/* Content for the first row */}
        <SearchForm searchButtonLabel="Modify Search" />
       </Box>
 
       {/* Second Row with Background Color */}
-      <Box sx={{ backgroundColor: 'lightgray', padding: 2, display: 'flex',
+      <Box sx={{ backgroundColor: 'rgba(255,255,255,0.5)', padding: 2, display: 'flex',
         justifyContent: 'center', alignItems:'center'}}>
         <FilterByDate />
         {/* Content for the second row */}
         
       </Box>
-    </Paper>
+    </Box>
   </Grid>
 
       {/* Second Grid */}
@@ -87,14 +87,14 @@ console.log(outboundSegments)
         <Grid container spacing={2}>
           {/* First Grid within the Second Grid */}
           <Grid item xs={9}>
-            <Paper style={{ height: '100%', padding: 16 }}>
+            <Box style={{ height: '100%', padding: 16 }}>
               {/* Content for the first Paper within the Second Grid */}
               
-              <Box sx={{width:'100%',minHeight:'36px',backgroundColor:'lightgray',border:'1px solid white',borderRadius:'5px'}}>
+              <Box sx={{width:'100%',minHeight:'36px',backgroundColor: 'rgba(255,255,255,0.5)',border:'1px solid white',borderRadius:'5px'}}>
               {/* content for filter Flight */}
               <FilterComponent/>
               </Box>
-              <Box sx={{width:'100%',minHeight:'80px',backgroundColor:'lightgray',display:'flex',marginTop:'10px',marginBottom:'5px',border:'1 px solid gray'}}>
+              <Box sx={{width:'100%',minHeight:'80px',display:'flex',marginTop:'10px',marginBottom:'5px',border:'1 px solid gray'}}>
              <RecommendFilter flightDataArray={flightSearchData.Results} onSortFlights={handleSortFlights} />
                  
               </Box>
@@ -119,16 +119,16 @@ console.log(outboundSegments)
                 )}
 </Box>
 
-            </Paper>
+            </Box>
             
           </Grid>
 
           {/* Second Grid within the Second Grid */}
           <Grid item xs={3}>
-            <Paper style={{ height: '100%', padding: 16 }}>
+            <Box style={{ height: '100%', padding: 16 }}>
               {/* Content for the second Paper within the Second Grid */}
-              Second Grid in Second Grid - 10%
-            </Paper>
+              Show ad here
+            </Box>
           </Grid>
         </Grid>
       </Grid>

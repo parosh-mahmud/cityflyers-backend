@@ -4,17 +4,18 @@ import { Box, Typography } from '@mui/material';
 const recommendedBoxStyle = {
   width: '100%',
   height: 'auto',
-  backgroundColor: 'lightgray',
+  backgroundColor: 'rgba(255,255,255,0.5)',
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
   padding: '10px',
+  borderRadius: '5px',
 };
 
 const boxStyle = {
   width: '300px',
   height: '100%',
-  backgroundColor: 'white',
+  backgroundColor: 'rgba(255,255,255,0.5)',
   border:'1px solid gray',
   borderRadius: '5px',
   cursor: 'pointer',

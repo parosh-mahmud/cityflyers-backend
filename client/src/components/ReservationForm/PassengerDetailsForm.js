@@ -138,7 +138,7 @@ const PassengerDetailsForm = () => {
       </Box>
 
 
-        <Box sx={{ backgroundColor: 'lightgray', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ backgroundColor: 'rgba(255,255,255,0.5)', display: 'flex', flexDirection: 'column' }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={3}>
               <TextField 

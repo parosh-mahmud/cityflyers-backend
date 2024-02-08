@@ -28,10 +28,10 @@ import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatRecline
 import { setSearchIDResultID } from "../../redux/slices/searchIDResultIDSlice";
 const useStyles = makeStyles((theme) => ({
   container: {
-    backgroundColor:'lightgray',
+    backgroundColor: 'rgba(255,255,255,0.5)',
     display: "flex",
     flexDirection: "row",
-    
+    borderRadius: "5px",
     [theme.breakpoints.down("sm")]: {
       flexDirection: "column",
     },
@@ -93,8 +93,8 @@ export const FlightCard = ({ flightData, onSelect, availability, isLoading, show
   const history = useHistory();
   const segment = flightData.segments[0];
   const segmentReturn = flightData.segments[1];
-  console.log(segment.TripIndicator)
-console.log(segment)
+  
+
 
 
  
@@ -108,25 +108,23 @@ const [airlineLogoUrl, setAirlineLogoUrl] = useState(null);
 const [anchorEl, setAnchorEl] = useState(null);
 const { currentUser } = useAuthCont(); 
 const flightSearchData = useSelector(selectFlightSearchData);
+const airlineCode = segment?.Airline?.AirlineCode;
 
 
 
-  useEffect(() => {
-    // Fetch the logo URL based on AirlineCode
-    const fetchLogoUrl = async () => {
-      try {
-        const response = await axios.get(`/api/airline/${segment.Airline.AirlineCode}`);
-        setAirlineLogoUrl(response.data.logoUrl); // Adjust based on your actual response structure
-      } catch (error) {
-        console.error('Error fetching airline logo:', error);
-      }
-    };
-
-    // Check if AirlineCode is available and fetch the logo
-    if (segment.Airline && segment.Airline.AirlineCode) {
+ useEffect(() => {
+    if (flightData?.segments?.[0]?.Airline?.AirlineCode) {
+      const fetchLogoUrl = async () => {
+        try {
+          const response = await axios.get(`/api/airline/${flightData.segments[0].Airline.AirlineCode}`);
+          setAirlineLogoUrl(response.data.logoUrl);
+        } catch (error) {
+          console.error('Error fetching airline logo:', error);
+        }
+      };
       fetchLogoUrl();
     }
-  }, [segment.Airline]);
+  }, [flightData]);
 
 
   const handleTabChange = (event, newValue) => {
@@ -178,44 +176,38 @@ const SearchIDs = flightSearchData.SearchId;
 
 
   const handleSelect = async () => {
-    try {
+  try {
+    // Validate flightData structure before proceeding
+    if (!flightData?.segments?.length || !flightData.segments[0]?.Airline) {
+      console.error("Incomplete flightData structure");
+      return; // Exit the function if data is not structured as expected
+    }
 
-      
-    // if (!currentUser) {
-    //   // If currentUser is null, navigate to the login page
-    //   history.push("/signin");
-    //   return;
-    // }
+    const requestBody = {
+      SearchID: flightSearchData.SearchId,
+      ResultID: flightData.ResultID,
+    };
 
-   
-
-      const requestBody = {
-        SearchID: SearchIDs,
-        ResultID: flightData.ResultID,
-      };
-     console.log('requestBody:', requestBody);
- dispatch(setSearchIDResultID({ searchId: SearchIDs, resultId: flightData.ResultID }));
-   
-    // Fetch air price data
     await dispatch(fetchAirPrice(requestBody));
+    dispatch(setSearchIDResultID({ searchId: flightSearchData.SearchId, resultId: flightData.ResultID }));
+    history.push("/airprebookform");
 
-      history.push("/airprebookform");
-      
-       if (typeof onSelect === 'function') {
+    if (typeof onSelect === 'function') {
       onSelect(flightData);
     }
-    } catch (error) {
-      console.error("Error fetching airPrice:", error);
-    }
-  };
+  } catch (error) {
+    console.error("Error fetching airPrice:", error);
+  }
+};
+
+
+
 
   return (
 
 
 
     <TabContext value={activeTab.toString()}>
-
-
 
 
       <div className={classes.container}>

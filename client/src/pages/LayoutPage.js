@@ -5,7 +5,7 @@ import Footer from '../components/footer/Footer';
 
 const LayoutPage = ({ children }) => {
   return (
-    <div>
+    <div style={{justifyContent:'center',alignItems:'center'}}>
       <DashBoardHeader />
       {children}
       <Footer />

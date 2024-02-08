@@ -23,7 +23,7 @@ const FilterByDate = () => {
     cursor: 'pointer',
     borderRadius: '5px',
     border: '1px solid blue',
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(255,255,255,0.5)',
   };
 
   const activeBoxStyle = {
