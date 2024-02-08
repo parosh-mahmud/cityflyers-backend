@@ -14,8 +14,7 @@
   },
   "main": "index.js",
   "dependencies": {
-    "firebase-functions": "^4.7.0",
-    "firebase-admin": "^11.8.0"
+    
   },
   "devDependencies": {
     "@google-cloud/storage": "^7.3.0",
