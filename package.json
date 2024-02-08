@@ -6,7 +6,6 @@
     "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
     "start": "node index.js",
-    "install": "npm install",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
@@ -14,16 +13,12 @@
     "node": "18"
   },
   "main": "index.js",
-  "dependencies": {
-    
-  },
   "devDependencies": {
     "@google-cloud/storage": "^7.3.0",
     "airline-iata-code": "^1.0.6",
     "airline-logo-scapper": "^1.0.1",
     "airport-codes-updated": "^1.0.0",
     "axios": "^1.5.0",
-    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
@@ -42,5 +37,10 @@
     "react-scripts": "^5.0.1",
     "uuid": "^9.0.1"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "node-pre-gyp": "^0.17.0",
+    "semver": "^7.6.0"
+  }
 }
