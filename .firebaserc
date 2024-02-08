@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "city-b9894"
-  }
+    "default": "city-flyers-7977d",
+    "dev": "city-flyers-7977d"
+  },
+  "targets": {},
+  "etags": {}
 }
