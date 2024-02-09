@@ -1,23 +1,5 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
-
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-const functions = require('firebase-functions');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -84,44 +66,6 @@ app.get('/api/airline/:code', async (req, res) => {
 
 
 
-// Endpoint for uploading logos
-app.post('/uploadLogos', async (req, res) => {
-  const logoFolderPath = '../server/airlines'; // Update this path to your logo folder
-
-  try {
-    const files = fs.readdirSync(logoFolderPath);
-    const uploadPromises = files.map(async (filename) => {
-      const filePath = path.join(logoFolderPath, filename);
-      const logoData = fs.readFileSync(filePath);
-      const storageRef = storageBucket.file(`logos/${filename}`);
-
-      await storageRef.save(logoData, {
-        metadata: {
-          contentType: 'image/png' // Set appropriate content type (image/png, image/jpeg, etc.)
-        }
-      });
-
-      const downloadUrl = await storageRef.getSignedUrl({
-        action: 'read',
-        expires: '03-01-2500' // Set an appropriate expiration date
-      });
-
-      // Add logo data to Firestore
-      await db.collection('airlineLogos').add({
-        filename: filename,
-        downloadUrl: downloadUrl[0] // Get the first URL from the array
-      });
-
-      console.log(`Logo ${filename} uploaded and added to Firestore.`);
-    });
-
-    await Promise.all(uploadPromises);
-    res.status(200).json({ message: 'Logos uploaded successfully.' });
-  } catch (error) {
-    console.error('Error uploading logos:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

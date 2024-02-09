@@ -1,0 +1,26 @@
+{
+  "name": "airline-logo-scapper",
+  "version": "1.0.1",
+  "description": "Npm module that returns airline logo image by scaprring from google search results",
+  "main": "index.js",
+  "dependencies": {
+    "node-horseman": "^3.3.0",
+    "phantomjs": "^2.1.7"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rajan471/airline-logo-scrapper-js.git"
+  },
+  "keywords": [
+    "airline",
+    "logo",
+    "scrapper"
+  ],
+  "author": "Rajan Kumar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rajan471/airline-logo-scrapper-js/issues"
+  },
+  "homepage": "https://github.com/rajan471/airline-logo-scrapper-js#readme"
+}
