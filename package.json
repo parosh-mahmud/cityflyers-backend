@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js", // Changed from nodemon to node
+    "start": "node index.js", 
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "react-scripts build"
   },
   "engines": {
-    "node": "14.x" // Specify the version of Node.js you are using
+    "node": "14.x" 
   },
   "repository": {
     "type": "git",
